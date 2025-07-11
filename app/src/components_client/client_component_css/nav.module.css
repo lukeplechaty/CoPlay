@@ -7,7 +7,17 @@
 
   width: 100vw;
   background-color: #081221;
-  border: 1px dashed red;
+}
+
+.navBackLayer {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: end;
+  width: 100vw;
+  /* background-color: #081221; */
+  z-index: 5;
+  position: absolute;
 }
 
 .searchBox {
@@ -27,4 +37,17 @@
   align-items: center;
   width: 50%;
   gap: 1rem;
+}
+
+.menuBox {
+  height: auto;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: auto;
+  z-index: 5;
+  background-color: #081221;
+  color: white;
+  border-bottom-left-radius: 20px;
+  /* top: 60px; */
 }

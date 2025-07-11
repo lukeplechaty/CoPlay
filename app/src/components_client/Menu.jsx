@@ -1,14 +1,7 @@
-// import { useState } from "react";
-
-export default function Menu() {
-  //   const [menu, setMenu] = useState(false);
-
-  //   const toggleMenu = () => {
-  //     setMenu((prev) => !prev);
-  //   };
+export default function Menu({ toggleMenu }) {
   return (
     <div>
-      <button>Menu</button>
+      <button onClick={toggleMenu}>Menu</button>
     </div>
   );
 }
