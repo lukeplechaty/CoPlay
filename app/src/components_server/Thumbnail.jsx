@@ -2,20 +2,22 @@ import Image from "next/image";
 
 export default function Thumbnail(props) {
   return (
-    <div>
+    <div className="p-2 rounded-2xl bg-slate-800/50">
       {/* tags */}
       <Image
         src={"/placeholder_video.jpg"}
-        width={150}
-        height={100}
+        width={250}
+        height={200}
         alt="Play-button"
+        className="rounded-lg"
       />
       <section className="flex items-center justify-evenly">
         <div>
-          <p>{props.title}</p>
-          <p>{props.username}</p>
+          <p className="font-bold text-lg">{props?.title || "Title"}</p>
+          <p>{props?.username || "User"}</p>
         </div>
-        {/* <Vote/> */}
+        <p>{props?.views || "0"} Views</p>
+        <Vote count={props.votes} />
       </section>
     </div>
   );
