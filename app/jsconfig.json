@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "paths": {
+      "£$/*": ["./src/components_client/client_component_css/*"],
+      "=$/*": ["./src/components_server/server_component_css/*"],
       "£/*": ["./src/components_client/*"],
       "=/*": ["./src/components_server/*"],
       "@/*": ["./src/*"]

@@ -1,11 +1,12 @@
-import style from "@/components_client/client_component_css/nav.module.css";
+import style from "£$/nav.module.css";
 import Menu from "./Menu";
 import Search from "./Search";
+import Image from "next/image";
 
 export default function NavBar() {
   return (
     <div className={style.nav}>
-      <img src="/images/CoPlayLogo.png" alt="CoPlay Logo" width="100" />
+      <Image src="/images/CoPlayLogo.png" alt="CoPlay Logo" width="100" />
       <Search />
       <Menu />
     </div>
