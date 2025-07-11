@@ -14,21 +14,22 @@ export default function Tags({ tagList }) {
     [[][]]
   */
 
-  const getTagValue = (name) =>
-    tagLayout.find((category) => category.name === name);
+  // const getTagValue = (name) =>
+  //   tagLayout.find((category) => category.name === name);
 
-  const sortTag = (tag) => {
-    getTagValue(tag.type)?.value?.push(tag.value);
-  };
+  // const sortTag = (tag) => {
+  //   getTagValue(tag.type)?.value?.push(tag.value);
+  // };
 
-  tagList.forEach((t) => {
-    sortTag(t);
-  });
+  // tagList.forEach((t) => {
+  //   sortTag(t);
+  // });
 
+  //console.log(tagList);
   return (
     <section>
       <div>
-        <p>Tags</p>
+        <p>{tagList[0]}s</p>
         <p>Expand/collapse</p>
       </div>
       {open ? (
@@ -36,6 +37,9 @@ export default function Tags({ tagList }) {
           {/* {tagLayout.map(t => {
 
           })} */}
+          {tagList[1].map((v) => (
+            <p>{v.value}</p>
+          ))}
         </div>
       ) : (
         <></>

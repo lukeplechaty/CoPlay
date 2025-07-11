@@ -1,12 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import Votes from "£/Votes";
-import Tags from "../components_client/Tags";
+import Tag from "../components_client/Tag";
 
 export default function Thumbnail({ video }) {
+  const grops = video.tags.reduce((result, obj) => {
+    (result[obj.type] = result[obj.type] || []).push(obj);
+    return result;
+  }, {});
   return (
     <div className="p-2 rounded-2xl bg-slate-800/50">
-      <Tags tagList={video.tags} />
+      {Object.entries(grops).map((tag) => (
+        <Tag tagList={tag} />
+      ))}
+      {/* <Tag tagList={video.tags} /> */}
       <Link href={"/"}>
         <Image
           src={"/images/placeholder_video.jpg"}
