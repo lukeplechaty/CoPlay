@@ -1,5 +1,5 @@
 import "./globals.css";
-
+import NavBar from "@/components_client/Navbar";
 export const metadata = {
   title: "CoPlay",
   description: "Video play with frends",
@@ -8,7 +8,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <NavBar />
+        {children}
+      </body>
     </html>
   );
 }
