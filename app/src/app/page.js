@@ -1,8 +1,8 @@
 import Thumbnail from "=/Thumbnail";
 import { getVideos } from "@/db";
 
-export default function HomePage() {
-  const videoArray = getVideos();
+export default async function HomePage() {
+  const videoArray = await getVideos();
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">
