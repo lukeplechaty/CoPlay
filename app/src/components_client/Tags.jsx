@@ -18,7 +18,7 @@ export default function Tags({ tagList }) {
     tagLayout.find((category) => category.name === name);
 
   const sortTag = (tag) => {
-    getTagValue(tag.type).value.push(tag.value);
+    getTagValue(tag.type)?.value?.push(tag.value);
   };
 
   tagList.forEach((t) => {
