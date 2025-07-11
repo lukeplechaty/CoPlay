@@ -1,6 +1,6 @@
 "use client";
 
-import style from "@/components_client/client_component_css/nav.module.css";
+import style from "£$/nav.module.css";
 import Menu from "./Menu";
 import Search from "./Search";
 import Image from "next/image";

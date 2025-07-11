@@ -1,4 +1,4 @@
-import style from "@/components_client/client_component_css/nav.module.css";
+import style from "£$/nav.module.css";
 
 export default function search() {
   return (

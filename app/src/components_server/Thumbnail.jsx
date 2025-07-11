@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import Votes from "£/Votes";
+import Tags from "../components_client/Tags";
 
 export default function Thumbnail({ video }) {
   return (
     <div className="p-2 rounded-2xl bg-slate-800/50">
-      {/* tags */}
+      <Tags tagList={video.tags} />
       <Link href={"/"}>
         <Image
-          src={"/placeholder_video.jpg"}
+          src={"/images/placeholder_video.jpg"}
           width={350}
           height={250}
           alt="Play-button"
