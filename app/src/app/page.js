@@ -1,6 +1,8 @@
 import Thumbnail from "=/Thumbnail";
+import { getVideos } from "@/db";
 
 export default function HomePage() {
+  const videoArray = getVideos();
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">
@@ -9,8 +11,9 @@ export default function HomePage() {
         <h3>My Uploads</h3>
       </section>
       <section>
-        {/* our map — getVideos? */}
-        <Thumbnail />
+        {videoArray?.map((v) => <Thumbnail key={v.id} video={v} />) || (
+          <h2>Post a video and start a trend!</h2>
+        )}
       </section>
     </main>
   );
