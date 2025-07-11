@@ -10,8 +10,8 @@ export default function Thumbnail({ video }) {
   }, {});
   return (
     <div className="p-2 rounded-2xl bg-slate-800/50">
-      {Object.entries(grops).map((tag) => (
-        <Tag tagList={tag} />
+      {Object.entries(grops).map((tag, index) => (
+        <Tag key={index} tagList={tag} />
       ))}
       {/* <Tag tagList={video.tags} /> */}
       <Link href={"/"}>
