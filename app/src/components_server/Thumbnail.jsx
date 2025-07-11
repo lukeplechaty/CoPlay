@@ -12,8 +12,8 @@ export default function Thumbnail(props) {
       />
       <section className="flex items-center justify-evenly">
         <div>
-          <p>{data.title}</p>
-          <p>{data.username}</p>
+          <p>{props.title}</p>
+          <p>{props.username}</p>
         </div>
         {/* <Vote/> */}
       </section>
