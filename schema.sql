@@ -1,0 +1,34 @@
+CREATE TABLE IF NOT EXISTS users
+(
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id TEXT NOT NULL,
+  username TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS videos
+(
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  url TEXT NOT NULL,
+  title TEXT NOT NULL,
+  views BIGINT DEFAULT 0,
+  votes BIGINT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS tags
+(
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  type TEXT NOT NULL,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_video_links (
+  user_id BIGINT REFERENCES users(id),
+  video_id BIGINT REFERENCES videos(id),
+  PRIMARY KEY (user_id, video_id)
+);
+
+CREATE TABLE IF NOT EXISTS video_tag_links (
+  video_id BIGINT REFERENCES videos(id),
+  tag_id BIGINT REFERENCES tags(id),
+  PRIMARY KEY (video_id, tag_id)
+);
