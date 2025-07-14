@@ -154,13 +154,17 @@ export async function getUserVote(video_id, user_id) {
   }
 }
 
-export async function addVideo({ url, title, tags = [] }) {
+export async function addVideo({ url, title, tags = [], user_id }) {
   try {
     const videoRes = await db.query(
       `INSERT INTO videos (url, title, views) VALUES ($1, $2, 0) RETURNING *`,
       [url, title]
     );
     const video = videoRes.rows[0];
+    await db.query(
+      `INSERT INTO user_video_links (user_id, video_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+      [user_id, video.id]
+    );
     for (const tag of tags) {
       const tagRes = await db.query(
         `INSERT INTO tags (type, value)
