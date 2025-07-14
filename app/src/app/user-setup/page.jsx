@@ -5,12 +5,16 @@ import { addUser } from "@/db";
 import { redirect } from "next/navigation";
 
 export default async function SetupUserPage() {
-  const { id, username } = await currentUser();
-  console.log(id);
-  if (!id) {
-    redirect("/sign-up");
+  const user = await currentUser();
+
+  if (!user || !user.id) {
+    console.log("no user found");
+    return redirect("/sign-up");
   }
 
+  const { id, username } = user;
+
   await addUser(id, username);
-  redirect("/");
+
+  return redirect("/");
 }
