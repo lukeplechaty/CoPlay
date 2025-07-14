@@ -6,6 +6,7 @@
   --primary: #e3e972;
   --secondary: #1c417d;
   --accent: #6967ad;
+  scrollbar-color: var(--text) transparent !important;
 }
 
 @theme inline {
@@ -31,4 +32,5 @@ body {
     "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
     sans-serif;
   color: var(--text);
+  overflow-x: hidden !important;
 }
