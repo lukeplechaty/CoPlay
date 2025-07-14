@@ -31,7 +31,7 @@ export async function getVideos(limit = 100, offset = 0) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views,videos.votes, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
@@ -49,7 +49,7 @@ export async function getVideo(id) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views,videos.votes, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
