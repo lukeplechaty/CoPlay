@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={`${[comfortaa.variable, moderno.variable].join(" ")}`}>
           <NavBar />
-          {children}
+          <div className="mt-6">{children}</div>
         </body>
       </html>
     </ClerkProvider>

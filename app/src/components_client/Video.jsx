@@ -7,7 +7,7 @@ export default async function Video({ data }) {
       controls
       controlsList="nodownload"
     >
-      <source src={url} />
+      <source src={url} type="video/mp4" />
       {/* will only show when <source> fails */}
       <p>
         Video failed to load, click <a href={url}>this link</a> instead.

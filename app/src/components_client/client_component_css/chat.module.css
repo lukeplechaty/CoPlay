@@ -1,0 +1,6 @@
+.container {
+  border-radius: 1rem;
+  background-color: hsl(from var(--background) h s calc(l + 8));
+  width: 75%;
+  height: 50%;
+}
