@@ -50,19 +50,19 @@ export default function Votes({ video_id, initialUpvotes = 0, initialDownvotes =
   return (
     <div className="flex flex-col gap-2 items-center">
       <div className="flex gap-4 items-center">
-        <button
+      <button
           onClick={() => handleVote('up')}
           className={`px-2 py-1 rounded ${userVote === true ? 'text-green-500 font-bold' : 'text-white'} ${loading || !userId ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-900/30'}`}
           disabled={!userId || loading}
-        >
-          ▲ {upvotes}
-        </button>
-        <button
+      >
+        ▲ {upvotes}
+      </button>
+      <button
           onClick={() => handleVote('down')}
           className={`px-2 py-1 rounded ${userVote === false ? 'text-red-500 font-bold' : 'text-white'} ${loading || !userId ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-900/30'}`}
           disabled={!userId || loading}
-        >
-          ▼ {downvotes}
+      >
+        ▼ {downvotes}
         </button>
       </div>
       <div className={`min-h-[1.5em] text-sm mt-1 ${messageClass}`}>{message}</div>
