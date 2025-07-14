@@ -17,6 +17,10 @@ export async function getUser(uuid) {
 
 export async function addUser(uuid, username) {
   try {
+    const { rows } = await db.query(`SELECT 1 FROM users WHERE uuid = $1`, [uuid]);
+    if (rows.length > 0) {
+      return false;
+    }
     await db.query(`INSERT INTO users (uuid, username) VALUES ($1, $2)`, [
       uuid,
       username,
@@ -31,7 +35,7 @@ export async function getVideos(limit = 100, offset = 0) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views,videos.votes, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
@@ -49,7 +53,7 @@ export async function getVideo(id) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views,videos.votes, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
@@ -67,7 +71,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id, videos.url, videos.title, videos.views, videos.votes,
+      SELECT videos.id, videos.url, videos.title, videos.views,
         JSONB_AGG(JSONB_BUILD_OBJECT('type', tags.type, 'value', tags.value)) AS tags
       FROM videos
       JOIN video_tag_links ON videos.id = video_tag_links.video_id
@@ -87,5 +91,65 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
     return rows;
   } catch (error) {
     throw new Error(`searching videos error: ${error}`);
+  }
+}
+
+// Up/down voting functions
+export async function setVote(video_id, user_id, direction) {
+  try {
+    await db.query(
+      `INSERT INTO video_users_votes (video_id, user_id, direction)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (video_id, user_id)
+       DO UPDATE SET direction = $3`,
+      [video_id, user_id, direction]
+    );
+    return true;
+  } catch (error) {
+    throw new Error(`setVote error: ${error}`);
+  }
+}
+
+export async function removeVote(video_id, user_id) {
+  try {
+    await db.query(
+      `DELETE FROM video_users_votes WHERE video_id = $1 AND user_id = $2`,
+      [video_id, user_id]
+    );
+    return true;
+  } catch (error) {
+    throw new Error(`removeVote error: ${error}`);
+  }
+}
+
+export async function getVoteCounts(video_id) {
+  try {
+    const { rows } = await db.query(
+      `SELECT
+         COUNT(*) FILTER (WHERE direction = TRUE) AS upvotes,
+         COUNT(*) FILTER (WHERE direction = FALSE) AS downvotes
+       FROM video_users_votes
+       WHERE video_id = $1`,
+      [video_id]
+    );
+    return {
+      upvotes: parseInt(rows[0].upvotes, 10),
+      downvotes: parseInt(rows[0].downvotes, 10)
+    };
+  } catch (error) {
+    throw new Error(`getVoteCounts error: ${error}`);
+  }
+}
+
+export async function getUserVote(video_id, user_id) {
+  try {
+    const { rows } = await db.query(
+      `SELECT direction FROM video_users_votes WHERE video_id = $1 AND user_id = $2`,
+      [video_id, user_id]
+    );
+    if (rows.length === 0) return null;
+    return rows[0].direction;
+  } catch (error) {
+    throw new Error(`getUserVote error: ${error}`);
   }
 }
