@@ -24,8 +24,8 @@ export default function NavBar() {
           <Image
             src={"/images/CoPlayLogo.png"}
             alt={"CoPlay Logo"}
-            width={100}
-            height={100}
+            width={120}
+            height={120}
           />
         </Link>
         <Search />

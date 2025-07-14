@@ -25,9 +25,11 @@ export default function Search() {
           placeholder="Search"
           className={style.searchBox}
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit" className={style.searchButton}>
+          Search
+        </button>
       </form>
     </>
   );

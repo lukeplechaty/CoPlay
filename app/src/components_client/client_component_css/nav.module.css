@@ -1,12 +1,14 @@
 .nav {
-  color: #f0f5f9;
+  color: var(--text);
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
 
   width: 100vw;
-  background-color: #081221;
+  background-color: var(--background);
+  border-bottom: 4px solid var(--primary);
+  padding: 1.5rem 0;
 }
 
 .navBackLayer {
@@ -15,21 +17,26 @@
   justify-content: end;
   align-items: end;
   width: 100vw;
-  /* background-color: #081221; */
   z-index: 5;
   position: absolute;
 }
 
 .searchBox {
-  color: black;
+  color: var(--text);
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  background-color: #f0f5f9;
+  background-color: hsl(from var(--background) h s calc(l + 6));
   border-radius: 20px;
-  padding-left: 1rem;
+  padding: 0.5rem 0 0.5rem 1rem;
+
+  transition: outline 100ms ease-in-out, scale 200ms ease-in-out;
+  &:focus-visible {
+    scale: 1.1;
+    outline: 2px solid var(--accent);
+  }
 }
 
 .searchBoxForm {
@@ -39,15 +46,49 @@
   gap: 1rem;
 }
 
+/* menu pop-up */
 .menuBox {
   height: auto;
-  padding-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: auto;
+  padding: 1rem;
+  width: 12rem;
   z-index: 5;
-  background-color: #081221;
-  color: white;
-  border-bottom-left-radius: 20px;
-  /* top: 60px; */
+  background-color: hsl(from var(--background) h s calc(l + 6));
+  color: var(--text);
+
+  border-radius: 1rem;
+  transform: translateY(-1.5rem);
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  column-gap: 1rem;
+  margin-right: 1rem;
+
+  * {
+    transition: filter 100ms ease-in-out;
+    &:hover {
+      filter: brightness(60%);
+    }
+    &:active {
+      filter: brightness(40%);
+    }
+  }
+}
+
+.button,
+.searchButton {
+  padding: 0.3rem 1rem;
+  border-radius: 1000px;
+  background-color: hsl(from var(--background) h s calc(l + 6));
+  transition: filter 200ms ease-in-out;
+  &:hover {
+    filter: brightness(90%);
+  }
+  &:active {
+    filter: brightness(75%);
+  }
+}
+
+.searchButton {
+  background-color: var(--accent);
 }
