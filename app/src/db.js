@@ -153,3 +153,50 @@ export async function getUserVote(video_id, user_id) {
     throw new Error(`getUserVote error: ${error}`);
   }
 }
+
+export async function addVideo({ url, title, tags = [] }) {
+  try {
+    const videoRes = await db.query(
+      `INSERT INTO videos (url, title, views) VALUES ($1, $2, 0) RETURNING *`,
+      [url, title]
+    );
+    const video = videoRes.rows[0];
+    for (const tag of tags) {
+      const tagRes = await db.query(
+        `INSERT INTO tags (type, value)
+         VALUES ($1, $2)
+         ON CONFLICT (type, value) DO UPDATE SET type = EXCLUDED.type RETURNING id`,
+        [tag.type, tag.value]
+      );
+      const tagId = tagRes.rows[0].id;
+      await db.query(
+        `INSERT INTO video_tag_links (video_id, tag_id)
+         VALUES ($1, $2)
+         ON CONFLICT DO NOTHING`,
+        [video.id, tagId]
+      );
+    }
+    const { rows } = await db.query(
+      `SELECT videos.id, videos.url, videos.title, videos.views,
+        JSONB_AGG(JSONB_BUILD_OBJECT('type', tags.type, 'value', tags.value)) AS tags
+      FROM videos
+      JOIN video_tag_links ON videos.id = video_tag_links.video_id
+      JOIN tags ON tags.id = video_tag_links.tag_id
+      WHERE videos.id = $1
+      GROUP BY videos.id`,
+      [video.id]
+    );
+    return rows[0];
+  } catch (error) {
+    throw new Error(`addVideo error: ${error}`);
+  }
+}
+
+export async function removeVideo(id) {
+  try {
+    await db.query(`DELETE FROM videos WHERE id = $1`, [id]);
+    return true;
+  } catch (error) {
+    throw new Error(`removeVideo error: ${error}`);
+  }
+}
