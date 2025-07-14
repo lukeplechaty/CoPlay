@@ -3,6 +3,7 @@ export default async function Video({ data }) {
   return (
     <video
       className="h-[75dvh] max-h-fit w-auto bg-black rounded-2xl"
+      autoPlay
       controls
       controlsList="nodownload"
     >
