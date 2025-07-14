@@ -13,7 +13,9 @@ export default function MenuBox({ menu }) {
       <SignedOut>
         <Link href="/sign-up"> Sign Up </Link>
       </SignedOut>
-      <h1>Upload</h1>
+      <Link href={"/upload"}>
+        <h1>Upload</h1>
+      </Link>
     </div>
   );
 }

@@ -8,7 +8,7 @@ const supabase = createClient(
 export async function addVideo(name, file) {
   try {
     const { data, error } = await supabase.storage
-      .from("videos")
+      .from("Videos")
       .upload(name, file);
     if (error === null) return data.path;
     else return error;
@@ -19,7 +19,7 @@ export async function addVideo(name, file) {
 
 export async function getVideoUrl(video) {
   try {
-    const { data } = supabase.storage.from("videos").getPublicUrl(video);
+    const { data } = await supabase.storage.from("Videos").getPublicUrl(video);
     return data.publicUrl;
   } catch (error) {
     throw new Error(`get from bucket error: ${error}`);

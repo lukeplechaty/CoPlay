@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import Votes from "./Votes";
-import Tag from "../components_client/Tag";
+import Votes from "£/Votes";
+import Tag from "£/Tag";
 import { getVoteCounts, getUserVote, getUser } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 
@@ -11,7 +11,9 @@ export default async function Thumbnail({ video }) {
     return result;
   }, {});
   const { userId } = await auth();
-  let upvotes = 0, downvotes = 0, userVote = null;
+  let upvotes = 0,
+    downvotes = 0,
+    userVote = null;
   if (userId) {
     const user = await getUser(userId);
     if (user) {
@@ -41,7 +43,13 @@ export default async function Thumbnail({ video }) {
           <p>{video?.username || "User"}</p>
         </div>
         <p>{video?.views || "0"} Views</p>
-        <Votes video_id={video?.id} initialUpvotes={upvotes} initialDownvotes={downvotes} initialUserVote={userVote} userId={userId} />
+        <Votes
+          video_id={video?.id}
+          initialUpvotes={upvotes}
+          initialDownvotes={downvotes}
+          initialUserVote={userVote}
+          userId={userId}
+        />
       </section>
     </div>
   );

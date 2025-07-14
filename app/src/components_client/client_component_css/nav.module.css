@@ -65,6 +65,7 @@
   margin-right: 1rem;
 
   * {
+    cursor: pointer;
     transition: filter 100ms ease-in-out;
     &:hover {
       filter: brightness(60%);
@@ -81,6 +82,7 @@
   border-radius: 1000px;
   background-color: hsl(from var(--background) h s calc(l + 6));
   transition: filter 200ms ease-in-out;
+  cursor: pointer;
   &:hover {
     filter: brightness(90%);
   }
