@@ -14,7 +14,7 @@ export default function Thumbnail({ video }) {
         <Tag key={index} tagList={tag} />
       ))}
       {/* <Tag tagList={video.tags} /> */}
-      <Link href={"/"}>
+      <Link href={`/play/${video.id}`}>
         <Image
           src={"/images/placeholder_video.jpg"}
           width={350}

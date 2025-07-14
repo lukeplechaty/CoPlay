@@ -1,7 +1,7 @@
 export default function Video({ url }) {
   return (
     <video
-      className="w-dvw min-h-fit bg-black"
+      className="min-h-[50dvh] w-auto bg-black rounded-2xl"
       controls
       controlsList="nodownload"
     >
