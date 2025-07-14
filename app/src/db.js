@@ -198,6 +198,9 @@ export async function addVideo({ url, title, tags = [], user_id }) {
 
 export async function removeVideo(id) {
   try {
+    await db.query(`DELETE FROM user_video_links WHERE video_id = $1`, [id]);
+    await db.query(`DELETE FROM video_tag_links WHERE video_id = $1`, [id]);
+    await db.query(`DELETE FROM video_users_votes WHERE video_id = $1`, [id]);
     await db.query(`DELETE FROM videos WHERE id = $1`, [id]);
     return true;
   } catch (error) {
