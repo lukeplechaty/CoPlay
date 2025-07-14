@@ -1,18 +1,32 @@
 import style from "£$/nav.module.css";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function search() {
+export default function Search() {
+  const router = useRouter();
+  const [value, setValue] = useState("");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const q = value.trim();
+    if (q) {
+      router.push(`/?q=${encodeURIComponent(q)}`);
+    } else {
+      router.push("/");
+    }
+  }
+
   return (
     <>
-      <form className={style.searchBoxForm}>
-        {/* <label htmlFor="search">Search</label> */}
+      <form className={style.searchBoxForm} onSubmit={handleSubmit}>
         <input
           type="text"
           name="search"
-          required
           placeholder="Search"
           className={style.searchBox}
+          value={value}
+          onChange={e => setValue(e.target.value)}
         />
-
         <button type="submit">Search</button>
       </form>
     </>

@@ -1,8 +1,10 @@
 import Thumbnail from "=/Thumbnail";
-import { getVideos } from "@/db";
+import { getVideos, searchVideos } from "@/db";
 
-export default async function HomePage() {
-  const videoArray = await getVideos();
+export default async function HomePage({ searchParams }) {
+  const searchData = await searchParams;
+  const query = searchData?.q || "";
+  const videoArray = query ? await searchVideos(query) : await getVideos();
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">
