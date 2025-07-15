@@ -227,7 +227,7 @@ export async function removeVideo(id) {
   }
 }
 
-export async function getTagTypes(uuid) {
+export async function getTagTypes() {
   try {
     const { rows } = await db.query(`SELECT * FROM tag_types`);
     return rows;
