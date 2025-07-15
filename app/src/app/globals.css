@@ -3,9 +3,10 @@
 
 :root {
   --text: #f0f5f9;
-  --primary: oklch(0.205 0 0);
-  --secondary: oklch(0.97 0 0);
-  --accent: oklch(0.97 0 0);
+  --background: #081221;
+  --primary: #e3e972;
+  --secondary: #1c417d;
+  --accent: #6967ad;
   scrollbar-color: var(--text) transparent !important;
   --radius: 0.625rem;
   --foreground: oklch(0.129 0.042 264.695);
