@@ -9,9 +9,8 @@ export default async function UploadPage() {
     const upload = await addVideo(file.name, file);
     console.log(file.name, upload);
   };
-  const getvid = async () => {
-    "use server";
-    const image = await getVideoUrl("images.jpg");
+  const getvid = () => {
+    const image = getVideoUrl("images.jpg");
     console.log("the image isssssssss", image);
     return image;
   };

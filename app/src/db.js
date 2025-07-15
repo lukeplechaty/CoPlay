@@ -17,7 +17,9 @@ export async function getUser(uuid) {
 
 export async function addUser(uuid, username) {
   try {
-    const { rows } = await db.query(`SELECT 1 FROM users WHERE uuid = $1`, [uuid]);
+    const { rows } = await db.query(`SELECT 1 FROM users WHERE uuid = $1`, [
+      uuid,
+    ]);
     if (rows.length > 0) {
       return false;
     }
@@ -35,11 +37,12 @@ export async function getVideos(limit = 100, offset = 0) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
-      GROUP BY videos.id
+      JOIN tag_types ON tag_types.id = tags.tag_type_id 
+      GROUP BY videos.id 
       LIMIT $1 OFFSET $2`,
       [limit, offset]
     );
@@ -53,10 +56,11 @@ export async function getVideo(id) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tags.type,'value',tags.value)) AS tags 
+      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
+      JOIN tag_types ON tag_types.id = tags.tag_type_id 
       WHERE videos.id = $1 
       GROUP BY videos.id`,
       [id]
@@ -134,7 +138,7 @@ export async function getVoteCounts(video_id) {
     );
     return {
       upvotes: parseInt(rows[0].upvotes, 10),
-      downvotes: parseInt(rows[0].downvotes, 10)
+      downvotes: parseInt(rows[0].downvotes, 10),
     };
   } catch (error) {
     throw new Error(`getVoteCounts error: ${error}`);
