@@ -1,15 +1,16 @@
 "use client";
-import { useRef } from "react";
 import { io as Io } from "socket.io-client";
 
 const SocketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:8080";
 
+// Create a single socket instance for the whole app
+let socket;
+
 export function useSocket() {
-  const SocketRef = useRef();
-  if (!SocketRef.current) {
-    SocketRef.current = Io(SocketUrl, {
+  if (!socket) {
+    socket = Io(SocketUrl, {
       autoConnect: true,
     });
   }
-  return SocketRef.current;
+  return socket;
 }
