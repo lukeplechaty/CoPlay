@@ -1,34 +1,28 @@
-import { addVideo, getVideoUrl } from "@/utils/fileupload";
-import Image from "next/image";
-import DropZone from "£/DropZone";
+"use client";
 
-export default async function UploadPage() {
-  const uploadFile = async (formData) => {
-    "use server";
-    const file = formData.get("file");
-    const upload = await addVideo(file.name, file);
-    console.log(file.name, upload);
-  };
-  const getvid = () => {
-    const image = getVideoUrl("images.jpg");
-    console.log("the image isssssssss", image);
-    return image;
-  };
+import {
+  Dropzone,
+  DropzoneContent,
+  DropzoneEmptyState,
+} from "@/components/ui/dropzone";
+import { useSupabaseUpload } from "@/hooks/use-supabase-upload";
+
+export default function UploadPage() {
+  const props = useSupabaseUpload({
+    bucketName: "test",
+    path: "test",
+    allowedMimeTypes: ["image/*", "video/mp4"],
+    maxFiles: 1,
+    maxFileSize: 1000 * 1000 * 10 * 5, // 50MB,
+  });
+
   return (
     <main className="w-full h-[75dvh] flex flex-col items-center justify-evenly">
-      <Image src={getvid()} alt="image" width={100} height={100} />
-      <h1 className="font-title text-2xl font-medium">Upload a video</h1>
-      <form
-        action={uploadFile}
-        className="w-full h-full flex flex-col items-center justify-evenly"
-      >
-        <DropZone />
-        {/* <input type="file" placeholder="Browse Files" name="file" id="file" /> */}
-
-        {/* metadata */}
-
-        <button type="submit">Upload</button>
-      </form>
+      <h1 className="font-title text-2xl font-medium">Video Upload</h1>
+      <Dropzone {...props}>
+        <DropzoneEmptyState />
+        <DropzoneContent />
+      </Dropzone>
     </main>
   );
 }
