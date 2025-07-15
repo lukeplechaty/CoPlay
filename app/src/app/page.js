@@ -1,6 +1,6 @@
 import Thumbnail from "=/Thumbnail";
 import { getUser, getVideos, searchVideos } from "@/db";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
