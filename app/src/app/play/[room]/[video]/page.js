@@ -1,16 +1,20 @@
 import { getVideo } from "@/db";
-import Video from "£/Video";
 import Chat from "£/Chat";
+import VideoRoomClient from "@/components_client/VideoRoomClient";
 
 export default async function VideoPage({ params }) {
-  const { video } = await params;
+  const resolvedParams = await params;
+  const { video, room } = resolvedParams;
+  if (!/^[0-9]+$/.test(String(video))) {
+    return null;
+  }
   const data = await getVideo(video);
   return (
     <>
       <main className="w-full h-full flex flex-col items-center justify-center mt-4">
-        <Video data={data} />
+        <VideoRoomClient video_id={video} room_id={room} data={data} />
         <Chat />
       </main>
     </>
   );
-}
+} 

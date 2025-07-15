@@ -4,6 +4,11 @@ import Votes from "£/Votes";
 import Tag from "£/Tag";
 import { getVoteCounts, getUserVote, getUser } from "@/db";
 import { auth } from "@clerk/nextjs/server";
+import ThumbnailClient from "@/components_client/ThumbnailClient";
+
+function generateRoomId(length = 8) {
+  return Math.random().toString(36).substring(2, 2 + length);
+}
 
 export default async function Thumbnail({ video }) {
   const grops = video.tags.reduce((result, obj) => {
@@ -23,20 +28,13 @@ export default async function Thumbnail({ video }) {
   const counts = await getVoteCounts(video.id);
   upvotes = counts.upvotes;
   downvotes = counts.downvotes;
+
   return (
     <div className="p-2 rounded-2xl bg-slate-800/50">
       {Object.entries(grops).map((tag, index) => (
         <Tag key={index} tagList={tag} />
       ))}
-      <Link href={`/play/${video.id}`}>
-        <Image
-          src={"/images/placeholder_video.jpg"}
-          width={350}
-          height={250}
-          alt="Play-button"
-          className="rounded-lg"
-        />
-      </Link>
+      <ThumbnailClient video={video} />
       <section className="flex items-center justify-evenly">
         <div>
           <p className="font-bold text-lg">{video?.title || "Title"}</p>

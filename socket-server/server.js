@@ -1,29 +1,135 @@
-import Express from 'express';
-import { createServer as CreateServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import { createServer } from "http";
+import { Server as SocketIoServer } from "socket.io";
 
-const App = Express();
-const HttpServer = CreateServer(App);
+const http_server = createServer();
 
-const Io = new SocketIOServer(HttpServer, {
+const io = new SocketIoServer(http_server, {
   cors: {
-    origin: '*',
+    origin: "*",
+    methods: ["GET", "POST"],
   },
 });
 
-App.get('/', (Request, Response) => {
-  Response.send('Socket.IO server running');
-});
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
 
-Io.on('connection', (Socket) => {
-  console.log('A user connected:', Socket.id);
+  socket.on("join-room", (room_id) => {
+    if (!room_id || typeof room_id !== "string") {
+      socket.emit("error", { message: "Invalid room_id" });
+      return;
+    }
+    socket.join(room_id);
+    console.log(`Socket ${socket.id} joined room ${room_id}`);
+    console.log("Current sockets in room:", Array.from(io.sockets.adapter.rooms.get(room_id) || []));
+    const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
+    // Assign host as the first socket in the room
+    const host_id = sockets_in_room[0];
+    const is_host = socket.id === host_id;
+    socket.emit("host-assigned", is_host);
+    if (is_host) {
+      console.log(`Socket ${socket.id} is the host of room ${room_id}`);
+    }
+    console.log(`Socket ${socket.id} joined room ${room_id}`);
+  });
 
-  Socket.on('disconnect', () => {
-    console.log('User disconnected:', Socket.id);
+  // --- Initial video sync logic ---
+  // Viewer requests current video status from host
+  socket.on("request_video_status", ({ room_id, requester_socket_id }) => {
+    console.log(`[Server] Received request_video_status from ${requester_socket_id} for room ${room_id}`);
+    const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
+    const host_id = sockets_in_room[0];
+    if (host_id && requester_socket_id) {
+      // Forward request to host only
+      io.to(host_id).emit("request_video_status", { room_id, requester_socket_id });
+      console.log(`[Server] Forwarded request_video_status from ${requester_socket_id} to host ${host_id} in room ${room_id}`);
+    }
+  });
+
+  // Host sends video status to a specific client (for initial sync)
+  socket.on("video_status_response", ({ room_id, status, target_socket_id }) => {
+    console.log(`[Server] Received video_status_response from host ${socket.id} for room ${room_id}, sending to ${target_socket_id}`);
+    if (target_socket_id) {
+      io.to(target_socket_id).emit("video_status_update", { status });
+      console.log(`[Server] Host ${socket.id} sent initial video_status_update to ${target_socket_id} in room ${room_id}:`, status);
+    }
+  });
+
+  socket.on("leave-room", (room_id) => {
+    if (!room_id || typeof room_id !== "string") {
+      socket.emit("error", { message: "Invalid room_id" });
+      return;
+    }
+    socket.leave(room_id);
+    const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
+    if (sockets_in_room.length > 0 && sockets_in_room[0] === socket.id) {
+      // Host is leaving, reassign host or close room
+      if (sockets_in_room.length > 1) {
+        const new_host_id = sockets_in_room[1];
+        io.to(new_host_id).emit("host-assigned", true);
+        console.log(`New host assigned: ${new_host_id} for room ${room_id}`);
+      } else {
+        for (const socket_id of sockets_in_room) {
+          if (socket_id !== socket.id) {
+            io.to(socket_id).emit("room-closed");
+            io.sockets.sockets.get(socket_id)?.disconnect(true);
+          }
+        }
+        console.log(`Room ${room_id} closed because host left.`);
+      }
+    }
+    console.log(`Socket ${socket.id} left room ${room_id}`);
+  });
+
+  // Remove old request/response logic for video status
+  socket.on("video_status_update", ({ room_id, status }) => {
+    const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
+    console.log(`[Server] Sockets in room ${room_id}:`, sockets_in_room);
+    // Store the latest status for the room
+    if (room_id) {
+      // latestVideoStatus[room_id] = status; // This line is removed
+    }
+    socket.to(room_id).emit("video_status_update", { status });
+    console.log(`[Server] Broadcasted video_status_update to room ${room_id}:`, status);
+  });
+
+  // Host sends video status to a specific client
+  socket.on("video_status_update", ({ room_id, status, target_socket_id }) => {
+    if (target_socket_id) {
+      // Send only to the requesting socket
+      io.to(target_socket_id).emit("video_status_update", { status });
+      console.log(`[Server] Host ${socket.id} sent video_status_update to ${target_socket_id} in room ${room_id}:`, status);
+    } else {
+      // Broadcast to all others in the room as before
+      socket.to(room_id).emit("video_status_update", { status });
+      console.log(`[Server] Broadcasted video_status_update to room ${room_id}:`, status);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    const rooms = Array.from(socket.rooms).filter((room_id) => room_id !== socket.id);
+    for (const room_id of rooms) {
+      const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
+      if (sockets_in_room.length > 0 && sockets_in_room[0] === socket.id) {
+        if (sockets_in_room.length > 1) {
+          const new_host_id = sockets_in_room[1];
+          io.to(new_host_id).emit("host-assigned", true);
+          console.log(`New host assigned: ${new_host_id} for room ${room_id}`);
+        } else {
+          for (const socket_id of sockets_in_room) {
+            if (socket_id !== socket.id) {
+              io.to(socket_id).emit("room-closed");
+              io.sockets.sockets.get(socket_id)?.disconnect(true);
+            }
+          }
+          console.log(`Room ${room_id} closed because host disconnected.`);
+        }
+      }
+    }
+    console.log("User disconnected:", socket.id);
   });
 });
 
-const Port = process.env.PORT || 8080;
-HttpServer.listen(Port, () => {
-  console.log(`Server listening on port ${Port}`);
+const port = process.env.PORT || 8080;
+http_server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
