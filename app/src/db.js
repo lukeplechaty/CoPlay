@@ -33,16 +33,31 @@ export async function addUser(uuid, username) {
   }
 }
 
-export async function getVideos(limit = 100, offset = 0) {
+export async function getVideos(limit = 100, offset = 0, order) {
+  let orderby = ``;
+  switch (order) {
+    case `asc`:
+      orderby = `ORDER BY videos.id ASC`;
+      break;
+    case `desc`:
+      orderby = `ORDER BY videos.id DESC`;
+      break;
+    case `trend`:
+      orderby = `ORDER BY videos.views`;
+      break;
+    default:
+      orderby = ``;
+      break;
+  }
   try {
     const { rows } = await db.query(
-      `
-      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
+      `SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
       FROM videos 
       JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       JOIN tags ON tags.id = video_tag_links.tag_id 
       JOIN tag_types ON tag_types.id = tags.tag_type_id 
       GROUP BY videos.id 
+      ${orderby} 
       LIMIT $1 OFFSET $2`,
       [limit, offset]
     );
@@ -209,5 +224,31 @@ export async function removeVideo(id) {
     return true;
   } catch (error) {
     throw new Error(`removeVideo error: ${error}`);
+  }
+}
+
+export async function getTagTypes() {
+  try {
+    const { rows } = await db.query(`SELECT * FROM tag_types`);
+    return rows;
+  } catch (error) {
+    throw new Error(`geting Tag Types error: ${error}`);
+  }
+}
+
+export async function updateVideoViews(id) {
+  try {
+    const { rows } = await db.query(
+      `SELECT views FROM videos WHERE videos.id = $1`,
+      [id]
+    );
+    await db.query(`UPDATE videos SET views = $1 WHERE videos.id = $2`, [
+      rows[0].views,
+      id,
+    ]);
+
+    return true;
+  } catch (error) {
+    throw new Error(`geting one video error: ${error}`);
   }
 }
