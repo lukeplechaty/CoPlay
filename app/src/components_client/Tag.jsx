@@ -42,14 +42,16 @@ export default function Tags({ tagList }) {
     <section className={style.tagBox}>
       <Popover>
         <PopoverTrigger className={style.tagList}>{tagList[0]}s</PopoverTrigger>
-        <PopoverContent>
-          <div className={style.tagResult}>
-            {/* {tagLayout.map(t => {
+        <PopoverContent className={style.popoverContent} side="right">
+          <div className={style.popBox}>
+            <div className={style.tagResult}>
+              {/* {tagLayout.map(t => {
 
           })} */}
-            {tagList[1].map((v, index) => (
-              <p key={v.id || index}>{v.value}</p>
-            ))}
+              {tagList[1].map((v, index) => (
+                <p key={v.id || index}>{v.value}</p>
+              ))}
+            </div>
           </div>
         </PopoverContent>
       </Popover>
