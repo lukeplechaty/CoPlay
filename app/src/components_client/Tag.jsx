@@ -47,8 +47,8 @@ export default function Tags({ tagList }) {
             {/* {tagLayout.map(t => {
 
           })} */}
-            {tagList[1].map((v) => (
-              <p>{v.value}</p>
+            {tagList[1].map((v, index) => (
+              <p key={v.id || index}>{v.value}</p>
             ))}
           </div>
         </PopoverContent>
