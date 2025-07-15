@@ -17,9 +17,9 @@ export async function addVideo(name, file) {
   }
 }
 
-export async function getVideoUrl(video) {
+export function getVideoUrl(video) {
   try {
-    const { data } = await supabase.storage.from("Videos").getPublicUrl(video);
+    const { data } = supabase.storage.from("Videos").getPublicUrl(video);
     return data.publicUrl;
   } catch (error) {
     throw new Error(`get from bucket error: ${error}`);

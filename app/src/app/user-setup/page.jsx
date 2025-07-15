@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export default async function SetupUserPage() {
   const user = await currentUser();
 
-  if (!user || !user.id) {
+  if (!user || !user.id || !user.username) {
     console.log("no user found");
     return redirect("/sign-up");
   }
