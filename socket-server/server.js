@@ -22,7 +22,6 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} joined room ${room_id}`);
     console.log("Current sockets in room:", Array.from(io.sockets.adapter.rooms.get(room_id) || []));
     const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
-    // Assign host as the first socket in the room
     const host_id = sockets_in_room[0];
     const is_host = socket.id === host_id;
     socket.emit("host-assigned", is_host);
@@ -32,20 +31,16 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} joined room ${room_id}`);
   });
 
-  // --- Initial video sync logic ---
-  // Viewer requests current video status from host
   socket.on("request_video_status", ({ room_id, requester_socket_id }) => {
     console.log(`[Server] Received request_video_status from ${requester_socket_id} for room ${room_id}`);
     const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
     const host_id = sockets_in_room[0];
     if (host_id && requester_socket_id) {
-      // Forward request to host only
       io.to(host_id).emit("request_video_status", { room_id, requester_socket_id });
       console.log(`[Server] Forwarded request_video_status from ${requester_socket_id} to host ${host_id} in room ${room_id}`);
     }
   });
 
-  // Host sends video status to a specific client (for initial sync)
   socket.on("video_status_response", ({ room_id, status, target_socket_id }) => {
     console.log(`[Server] Received video_status_response from host ${socket.id} for room ${room_id}, sending to ${target_socket_id}`);
     if (target_socket_id) {
@@ -62,7 +57,6 @@ io.on("connection", (socket) => {
     socket.leave(room_id);
     const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
     if (sockets_in_room.length > 0 && sockets_in_room[0] === socket.id) {
-      // Host is leaving, reassign host or close room
       if (sockets_in_room.length > 1) {
         const new_host_id = sockets_in_room[1];
         io.to(new_host_id).emit("host-assigned", true);
@@ -80,26 +74,20 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} left room ${room_id}`);
   });
 
-  // Remove old request/response logic for video status
   socket.on("video_status_update", ({ room_id, status }) => {
     const sockets_in_room = Array.from(io.sockets.adapter.rooms.get(room_id) || []);
     console.log(`[Server] Sockets in room ${room_id}:`, sockets_in_room);
-    // Store the latest status for the room
     if (room_id) {
-      // latestVideoStatus[room_id] = status; // This line is removed
     }
     socket.to(room_id).emit("video_status_update", { status });
     console.log(`[Server] Broadcasted video_status_update to room ${room_id}:`, status);
   });
 
-  // Host sends video status to a specific client
   socket.on("video_status_update", ({ room_id, status, target_socket_id }) => {
     if (target_socket_id) {
-      // Send only to the requesting socket
       io.to(target_socket_id).emit("video_status_update", { status });
       console.log(`[Server] Host ${socket.id} sent video_status_update to ${target_socket_id} in room ${room_id}:`, status);
     } else {
-      // Broadcast to all others in the room as before
       socket.to(room_id).emit("video_status_update", { status });
       console.log(`[Server] Broadcasted video_status_update to room ${room_id}:`, status);
     }
