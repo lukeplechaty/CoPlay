@@ -1,6 +1,6 @@
 import { addVideo, getTagTypes, getUser } from "@/db";
 import { getVideoUrl } from "@/utils/fileupload";
-import { auth } from "@clerk/nextjs/dist/types/server";
+import { auth } from "@clerk/nextjs/server";
 import TagComboBox from "£/TagComboBox";
 
 export default async function VideoDbUploadPage({ params }) {
