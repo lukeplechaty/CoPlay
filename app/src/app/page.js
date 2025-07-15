@@ -12,12 +12,12 @@ export default async function HomePage({ searchParams }) {
     ? await searchVideos(query)
     : await getVideos(100, 0, sort);
 
-  const { userId } = await auth();
-  let user;
-  if (userId) user = getUser(userId);
-  if (!user) {
-    redirect(`/user-setup`);
-  }
+  // const { userId } = await auth();
+  // let user;
+  // if (userId) user = getUser(userId);
+  // if (!user) {
+  //   redirect(`/user-setup`);
+  // }
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">
