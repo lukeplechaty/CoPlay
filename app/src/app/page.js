@@ -1,23 +1,14 @@
 import Thumbnail from "=/Thumbnail";
-import { getUser, getVideos, searchVideos } from "@/db";
-import { auth } from "@clerk/nextjs/server";
+import { getVideos, searchVideos } from "@/db";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function HomePage({ searchParams }) {
   const searchData = await searchParams;
   const query = searchData?.q || "";
   const sort = searchData?.sort || ``;
-  let videoArray = query
-    ? await searchVideos(query)
-    : await getVideos(100, 0, sort);
+  let videoArray = query ? await searchVideos(query) : await getVideos(sort);
 
-  // const { userId } = await auth();
-  // let user;
-  // if (userId) user = getUser(userId);
-  // if (!user) {
-  //   redirect(`/user-setup`);
-  // }
+  console.log(videoArray);
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">

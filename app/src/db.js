@@ -33,7 +33,7 @@ export async function addUser(uuid, username) {
   }
 }
 
-export async function getVideos(limit = 100, offset = 0, order) {
+export async function getVideos(order, limit = 100, offset = 0) {
   let orderby = ``;
   switch (order) {
     case `asc`:
@@ -51,14 +51,26 @@ export async function getVideos(limit = 100, offset = 0, order) {
   }
   try {
     const { rows } = await db.query(
-      `SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
-      FROM videos 
-      JOIN video_tag_links ON videos.id = video_tag_links.video_id 
-      JOIN tags ON tags.id = video_tag_links.tag_id 
-      JOIN tag_types ON tag_types.id = tags.tag_type_id 
-      GROUP BY videos.id 
-      ${orderby} 
-      LIMIT $1 OFFSET $2`,
+      `
+      SELECT
+        videos.id,
+        videos.url,
+        videos.title,
+        videos.views,
+        COALESCE(
+          JSONB_AGG(
+            DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
+          ) FILTER (WHERE tags.id IS NOT NULL),
+          '[]'
+        ) AS tags
+      FROM videos
+      LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
+      LEFT JOIN tags ON tags.id = video_tag_links.tag_id
+      LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
+      GROUP BY videos.id
+      ${orderby}
+      LIMIT $1 OFFSET $2
+      `,
       [limit, offset]
     );
     return rows;
@@ -71,13 +83,24 @@ export async function getVideo(id) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id,videos.url,videos.title,videos.views, JSONB_AGG(JSONB_BUILD_OBJECT('type',tag_types.value,'value',tags.value)) AS tags 
+      SELECT
+        videos.id,
+        videos.url,
+        videos.title,
+        videos.views,
+        COALESCE(
+          JSONB_AGG(
+            DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
+          ) FILTER (WHERE tags.id IS NOT NULL), 
+          '[]'
+        ) AS tags 
       FROM videos 
-      JOIN video_tag_links ON videos.id = video_tag_links.video_id 
-      JOIN tags ON tags.id = video_tag_links.tag_id 
-      JOIN tag_types ON tag_types.id = tags.tag_type_id 
+      LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id 
+      LEFT JOIN tags ON tags.id = video_tag_links.tag_id 
+      LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id 
       WHERE videos.id = $1 
-      GROUP BY videos.id`,
+      GROUP BY videos.id
+      `,
       [id]
     );
     return rows[0];
@@ -90,11 +113,21 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
   try {
     const { rows } = await db.query(
       `
-      SELECT videos.id, videos.url, videos.title, videos.views,
-        JSONB_AGG(JSONB_BUILD_OBJECT('type', tags.type, 'value', tags.value)) AS tags
+      SELECT 
+        videos.id, 
+        videos.url, 
+        videos.title, 
+        videos.views,
+        COALESCE(
+          JSONB_AGG(
+            DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
+          ) FILTER (WHERE tags.id IS NOT NULL), 
+          '[]'
+        ) AS tags
       FROM videos
-      JOIN video_tag_links ON videos.id = video_tag_links.video_id
-      JOIN tags ON tags.id = video_tag_links.tag_id
+      LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
+      LEFT JOIN tags ON tags.id = video_tag_links.tag_id
+      LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
       WHERE LOWER(videos.title) LIKE LOWER($1)
          OR videos.id IN (
            SELECT video_tag_links.video_id
