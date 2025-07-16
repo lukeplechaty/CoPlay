@@ -57,6 +57,7 @@ export async function getVideos(order, limit = 100, offset = 0) {
         videos.url,
         videos.title,
         videos.views,
+        users.uuid AS uploader_uuid,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -64,10 +65,12 @@ export async function getVideos(order, limit = 100, offset = 0) {
           '[]'
         ) AS tags
       FROM videos
+      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
+      INNER JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
-      GROUP BY videos.id
+      GROUP BY videos.id, users.uuid
       ${orderby}
       LIMIT $1 OFFSET $2
       `,
@@ -88,6 +91,7 @@ export async function getVideo(id) {
         videos.url,
         videos.title,
         videos.views,
+        users.uuid AS uploader_uuid,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -95,11 +99,13 @@ export async function getVideo(id) {
           '[]'
         ) AS tags 
       FROM videos 
+      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
+      INNER JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id 
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id 
       WHERE videos.id = $1 
-      GROUP BY videos.id
+      GROUP BY videos.id, users.uuid
       `,
       [id]
     );
@@ -118,6 +124,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
         videos.url, 
         videos.title, 
         videos.views,
+        users.uuid AS uploader_uuid,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -125,6 +132,8 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
           '[]'
         ) AS tags
       FROM videos
+      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
+      INNER JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
@@ -135,7 +144,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
            JOIN tags ON tags.id = video_tag_links.tag_id
            WHERE LOWER(tags.value) LIKE LOWER($1)
          )
-      GROUP BY videos.id
+      GROUP BY videos.id, users.uuid
       LIMIT $2 OFFSET $3
       `,
       [`%${searchTerm}%`, limit, offset]
@@ -273,5 +282,76 @@ export async function updateVideoViews(id) {
     return true;
   } catch (error) {
     throw new Error(`geting one video error: ${error}`);
+  }
+}
+
+export async function getUserVideos(user_id, limit = 100, offset = 0) {
+  try {
+    const { rows } = await db.query(
+      `
+      SELECT 
+        videos.id, 
+        videos.url, 
+        videos.title, 
+        videos.views,
+        users.uuid AS uploader_uuid,
+        COALESCE(
+          JSONB_AGG(
+            DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
+          ) FILTER (WHERE tags.id IS NOT NULL), 
+          '[]'
+        ) AS tags
+      FROM videos
+      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
+      INNER JOIN users ON user_video_links.user_id = users.id
+      LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
+      LEFT JOIN tags ON tags.id = video_tag_links.tag_id
+      LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
+      WHERE user_video_links.user_id = $1
+      GROUP BY videos.id, users.uuid
+      LIMIT $2 OFFSET $3
+      `,
+      [user_id, limit, offset]
+    );
+    return rows;
+  } catch (error) {
+    throw new Error(`getUserVideos error: ${error}`);
+  }
+}
+
+export async function editVideo({ video_id, url, title, tags = [] }) {
+  try {
+    // Update video details
+    await db.query(
+      `UPDATE videos SET url = $1, title = $2 WHERE id = $3`,
+      [url, title, video_id]
+    );
+
+    // Remove old tag links
+    await db.query(
+      `DELETE FROM video_tag_links WHERE video_id = $1`,
+      [video_id]
+    );
+
+    // Add new tags and links
+    for (const tag of tags) {
+      const tag_res = await db.query(
+        `INSERT INTO tags (tag_type_id, value)
+         VALUES ($1, $2)
+         ON CONFLICT (tag_type_id, value) DO UPDATE SET value = EXCLUDED.value RETURNING id`,
+        [tag.id, tag.value]
+      );
+      const tag_id = tag_res.rows[0].id;
+      await db.query(
+        `INSERT INTO video_tag_links (video_id, tag_id)
+         VALUES ($1, $2)
+         ON CONFLICT DO NOTHING`,
+        [video_id, tag_id]
+      );
+    }
+
+    return true;
+  } catch (error) {
+    throw new Error(`edit_video error: ${error}`);
   }
 }
