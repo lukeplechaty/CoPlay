@@ -1,6 +1,6 @@
 .tagResult {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: wrap;
   justify-content: space-evenly;
   gap: 0.2rem;
@@ -11,6 +11,8 @@
   padding: 0.2rem;
   border-radius: 20px;
   margin: 2px;
+  max-height: 250px;
+  overflow-y: auto;
 }
 
 .tagList {
@@ -20,11 +22,12 @@
   align-items: baseline;
   justify-content: space-evenly;
   /* border: 1px solid black; */
-  padding: 0.5rem;
+  padding: 0.8rem;
   margin-right: 0.2rem;
   margin-bottom: 0.2rem;
   width: 100%;
   border-radius: 20px;
+  color: white;
 }
 
 .tagBox {

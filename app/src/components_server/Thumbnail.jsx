@@ -33,7 +33,7 @@ export default async function Thumbnail({ video }) {
   downvotes = counts.downvotes;
 
   return (
-    <div className="p-2 rounded-2xl bg-slate-800/50">
+    <div className="p-2 rounded-2xl bg-slate-800/50 m-3">
       <div className={style.tagBox}>
         {Object.entries(grops).map((tag, index) => (
           <Tag key={index} tagList={tag} />

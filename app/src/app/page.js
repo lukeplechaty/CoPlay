@@ -25,7 +25,6 @@ export default async function HomePage({ searchParams }) {
           <h2>Post a video and start a trend!</h2>
         )}
       </section>
-      <h1>test</h1>
     </main>
   );
 }
