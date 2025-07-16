@@ -4,9 +4,16 @@ import Link from "next/link";
 
 export default async function HomePage({ searchParams }) {
   const searchData = await searchParams;
-  const query = searchData?.q || "";
+  const query = searchData?.q || ``;
   const sort = searchData?.sort || ``;
-  const videoArray = query ? await searchVideos(query) : await getVideos(sort);
+  async function getVideo() {
+    if (query) return await searchVideos(query);
+    else if (sort) return await getVideos(sort);
+    else if (false) return await getUserVideos(uuid);
+    else return await getVideos(sort);
+  }
+  const videoArray = await getVideo();
+
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">

@@ -57,7 +57,7 @@ export async function getVideos(order, limit = 100, offset = 0) {
         videos.url,
         videos.title,
         videos.views,
-        users.username AS uploader_username,
+        users.username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -65,8 +65,8 @@ export async function getVideos(order, limit = 100, offset = 0) {
           '[]'
         ) AS tags
       FROM videos
-      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
-      INNER JOIN users ON user_video_links.user_id = users.id
+      LEFT JOIN user_video_links ON videos.id = user_video_links.video_id
+      LEFT JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
@@ -91,7 +91,7 @@ export async function getVideo(id) {
         videos.url,
         videos.title,
         videos.views,
-        users.username AS uploader_username,
+        users.username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -99,8 +99,8 @@ export async function getVideo(id) {
           '[]'
         ) AS tags 
       FROM videos 
-      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
-      INNER JOIN users ON user_video_links.user_id = users.id
+      LEFT JOIN user_video_links ON videos.id = user_video_links.video_id
+      LEFT JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id 
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id 
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id 
@@ -124,7 +124,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
         videos.url, 
         videos.title, 
         videos.views,
-        users.username AS uploader_username,
+        users.username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -132,8 +132,8 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
           '[]'
         ) AS tags
       FROM videos
-      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
-      INNER JOIN users ON user_video_links.user_id = users.id
+      LEFT JOIN user_video_links ON videos.id = user_video_links.video_id
+      LEFT JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
@@ -275,7 +275,7 @@ export async function updateVideoViews(id) {
       [id]
     );
     await db.query(`UPDATE videos SET views = $1 WHERE videos.id = $2`, [
-      rows[0].views,
+      rows[0].views + 1,
       id,
     ]);
 
@@ -294,7 +294,7 @@ export async function getUserVideos(user_id, limit = 100, offset = 0) {
         videos.url, 
         videos.title, 
         videos.views,
-        users.username AS uploader_username,
+        users.username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -302,8 +302,8 @@ export async function getUserVideos(user_id, limit = 100, offset = 0) {
           '[]'
         ) AS tags
       FROM videos
-      INNER JOIN user_video_links ON videos.id = user_video_links.video_id
-      INNER JOIN users ON user_video_links.user_id = users.id
+      LEFT JOIN user_video_links ON videos.id = user_video_links.video_id
+      LEFT JOIN users ON user_video_links.user_id = users.id
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
@@ -322,16 +322,16 @@ export async function getUserVideos(user_id, limit = 100, offset = 0) {
 export async function editVideo({ video_id, url, title, tags = [] }) {
   try {
     // Update video details
-    await db.query(
-      `UPDATE videos SET url = $1, title = $2 WHERE id = $3`,
-      [url, title, video_id]
-    );
+    await db.query(`UPDATE videos SET url = $1, title = $2 WHERE id = $3`, [
+      url,
+      title,
+      video_id,
+    ]);
 
     // Remove old tag links
-    await db.query(
-      `DELETE FROM video_tag_links WHERE video_id = $1`,
-      [video_id]
-    );
+    await db.query(`DELETE FROM video_tag_links WHERE video_id = $1`, [
+      video_id,
+    ]);
 
     // Add new tags and links
     for (const tag of tags) {
