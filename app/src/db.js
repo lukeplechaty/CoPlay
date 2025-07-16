@@ -43,7 +43,7 @@ export async function getVideos(order, limit = 100, offset = 0) {
       orderby = `ORDER BY videos.id DESC`;
       break;
     case `trend`:
-      orderby = `ORDER BY videos.views`;
+      orderby = `ORDER BY videos.views DESC`;
       break;
     default:
       orderby = ``;
@@ -285,7 +285,6 @@ export async function updateVideoViews(id) {
     throw new Error(`geting one video error: ${error}`);
   }
 }
-
 
 export async function getUserVideos(user_id, limit = 100, offset = 0) {
   try {
