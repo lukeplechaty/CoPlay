@@ -9,9 +9,9 @@ import { useSupabaseUpload } from "@/hooks/use-supabase-upload";
 
 export default function UploadPage() {
   const props = useSupabaseUpload({
-    bucketName: "test",
-    path: "test",
-    allowedMimeTypes: ["image/*", "video/mp4"],
+    bucketName: "Videos",
+    path: "",
+    allowedMimeTypes: [/* "image/*",  */ "video/mp4"],
     maxFiles: 1,
     maxFileSize: 1000 * 1000 * 10 * 5, // 50MB,
   });

@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, File, Loader2, Upload, X } from "lucide-react";
 import { createContext, useCallback, useContext } from "react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { encodePeriod } from "@/utils/escaping";
 
 export const formatBytes = (bytes, decimals = 2, size) => {
   const k = 1000;
@@ -55,6 +56,7 @@ const Dropzone = ({
   );
 };
 const DropzoneContent = ({ className }) => {
+  // const direct = useRouter();
   const {
     files,
     setFiles,
@@ -77,6 +79,11 @@ const DropzoneContent = ({ className }) => {
   );
 
   if (isSuccess) {
+    // * MY CODE ———————————————————————————————————————
+    const dynamicRoute = encodePeriod(files[0].name);
+    console.log(`/upload/${dynamicRoute}`);
+    window.location.href = `/upload/${dynamicRoute}`;
+    // * ———————————————————————————————————————————————
     return (
       <div
         className={cn(
@@ -175,17 +182,7 @@ const DropzoneContent = ({ className }) => {
         <div className="mt-4">
           <Button
             variant="outline"
-            // * MY CODE ———————
-            onClick={() => {
-              /** @returns {object} {name, message} */
-              const upl = onUpload();
-              // no error
-              if (!upl.message) {
-                // probably not allwoed 😭
-                redirect(`/upload/${upl.name}`);
-              }
-            }}
-            // * ———————————————
+            onClick={onUpload}
             disabled={files.some((file) => file.errors.length !== 0) || loading}
           >
             {loading ? (

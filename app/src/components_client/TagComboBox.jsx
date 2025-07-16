@@ -18,10 +18,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function TagComboBox({ frameworks }) {
+export default function TagComboBox({ frameworks, oneTag, setOneTag }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-
+  const [id, setId] = useState("");
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -31,8 +30,8 @@ export default function TagComboBox({ frameworks }) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
+          {id
+            ? frameworks.find((framework) => framework.id === id)?.value
             : "Select framework..."}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -45,21 +44,25 @@ export default function TagComboBox({ frameworks }) {
             <CommandGroup>
               {frameworks.map((framework) => (
                 <CommandItem
-                  key={framework.value}
+                  key={framework.id}
                   value={framework.value}
                   onSelect={() => {
-                    // * changed this
-                    setValue(framework.id === value ? "" : framework.id);
+                    setId(framework.id === id ? "" : framework.id);
+                    // might have issues if setId takes too long ¯\_(ツ)_/¯
+                    setOneTag({
+                      ...oneTag,
+                      id: framework.id === id ? "" : framework.id,
+                    });
                     setOpen(false);
                   }}
                 >
                   <CheckIcon
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      id === framework.id ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {framework.label}
+                  {framework.value}
                 </CommandItem>
               ))}
             </CommandGroup>
