@@ -7,7 +7,7 @@ export default function Chat({ room_id }) {
 
   async function sendMessage(e) {
     const message = e.get(`message`).trim();
-    if (!socket || !room_id) return;
+    if (!socket || !room_id || !message) return;
     socket.emit("chat_update", {
       room_id,
       message,
@@ -16,7 +16,7 @@ export default function Chat({ room_id }) {
 
   return (
     <section className={style.container}>
-      {/* bottom of video */}
+      {/* bottom of video, Chatbox now displays a list of messages */}
       <form action={sendMessage}>
         <input type="text" name="message" />
         <button type="submit">submit</button>
