@@ -22,6 +22,9 @@
   margin-bottom: 0.5rem;
   /* padding-top: 0.5rem; */
   padding-bottom: 0.5rem;
+  /* border: 1px dashed red; */
+  width: 100%;
+  height: 100%;
 }
 
 .name {
@@ -51,5 +54,18 @@
 
   .name {
     color: white;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .body {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    height: 50vh;
+    max-height: 50vh;
+    max-width: 20vw;
+    min-width: 20vw;
   }
 }

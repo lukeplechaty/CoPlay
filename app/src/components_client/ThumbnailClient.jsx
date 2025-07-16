@@ -2,7 +2,9 @@
 import Image from "next/image";
 
 function generateRoomId(length = 8) {
-  return Math.random().toString(36).substring(2, 2 + length);
+  return Math.random()
+    .toString(36)
+    .substring(2, 2 + length);
 }
 
 export default function ThumbnailClient({ video }) {
@@ -22,4 +24,4 @@ export default function ThumbnailClient({ video }) {
       />
     </a>
   );
-} 
+}
