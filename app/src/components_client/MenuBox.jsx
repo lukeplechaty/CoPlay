@@ -2,13 +2,17 @@ import Style from "@/components_client/client_component_css/nav.module.css";
 import Logins from "./Logins";
 import Link from "next/link";
 import { SignedOut } from "@clerk/nextjs";
+import { forwardRef } from "react";
+import "animate.css";
 
-export default function MenuBox({ menu }) {
+const MenuBox = forwardRef(function MenuBox({ menu }, ref) {
   if (!menu) return null;
 
   return (
-    <div className={Style.menuBox}>
-      {/* Update these with links */}
+    <div
+      ref={ref}
+      className={`${Style.menuBox} animate__animated animate__fadeInDown`}
+    >
       <Logins />
       <SignedOut>
         <Link href="/sign-up"> Sign Up </Link>
@@ -18,4 +22,6 @@ export default function MenuBox({ menu }) {
       </Link>
     </div>
   );
-}
+});
+
+export default MenuBox;

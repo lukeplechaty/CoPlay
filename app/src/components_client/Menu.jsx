@@ -1,11 +1,14 @@
 import style from "£$/nav.module.css";
+import { forwardRef } from "react";
 
-export default function Menu({ toggleMenu }) {
+const Menu = forwardRef(({ toggleMenu }, ref) => {
   return (
-    <div>
+    <div ref={ref}>
       <button onClick={toggleMenu} className={style.button}>
         Menu
       </button>
     </div>
   );
-}
+});
+
+export default Menu;

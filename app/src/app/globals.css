@@ -142,3 +142,16 @@ body {
     @apply bg-background;
   }
 }
+
+@keyframes flash-bg {
+  0% {
+    background-color: #ffeb3b; /* bright yellow or your highlight */
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.link-flash {
+  animation: flash-bg 0.5s ease;
+}
