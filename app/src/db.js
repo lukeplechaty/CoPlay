@@ -274,8 +274,10 @@ export async function updateVideoViews(id) {
       `SELECT views FROM videos WHERE videos.id = $1`,
       [id]
     );
+    console.log(rows[0].views);
+
     await db.query(`UPDATE videos SET views = $1 WHERE videos.id = $2`, [
-      rows[0].views + 1,
+      parseInt(rows[0].views, 10) + 1,
       id,
     ]);
 
