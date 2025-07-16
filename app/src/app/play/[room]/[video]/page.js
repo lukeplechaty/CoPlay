@@ -1,5 +1,4 @@
 import { getVideo } from "@/db";
-import Chat from "£/Chat";
 import VideoRoomClient from "@/components_client/VideoRoomClient";
 
 export default async function VideoPage({ params }) {
@@ -13,8 +12,7 @@ export default async function VideoPage({ params }) {
     <>
       <main className="w-full h-full flex flex-col items-center justify-center mt-4">
         <VideoRoomClient video_id={video} room_id={room} data={data} />
-        <Chat />
       </main>
     </>
   );
-} 
+}
