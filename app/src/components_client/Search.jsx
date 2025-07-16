@@ -27,7 +27,10 @@ export default function Search() {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <button type="submit" className={style.searchButton}>
+        <button
+          type="submit"
+          className={`${style.searchButton} text-[#f0f5f9]`}
+        >
           Search
         </button>
       </form>

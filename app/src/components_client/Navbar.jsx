@@ -40,17 +40,27 @@ export default function NavBar() {
     <>
       <div className={`${style.nav} pt-4 pb-4`} ref={menuRef}>
         <Link href={"/"}>
-          <Image
-            src={"/images/CoPlayLogo.png"}
-            alt={"CoPlay Logo"}
-            width={120}
-            height={120}
-          />
+          <picture>
+            <source
+              srcSet="/images/CoPlayLight.png"
+              media="(prefers-color-scheme: light)"
+              alt="CoPlay Logo"
+              width={120}
+              height={120}
+            />
+            <Image
+              src="/images/CoPlayLogo.png"
+              alt="CoPlay Logo"
+              media="(prefers-color-scheme: dark)"
+              width={120}
+              height={120}
+            />
+          </picture>
         </Link>
         <Search />
         <Menu toggleMenu={toggleMenu} />
       </div>
-      <div className={style.navBackLayer} ref={menuRef}>
+      <div className={style.navBackLayer}>
         <MenuBox menu={menu} />
       </div>
     </>

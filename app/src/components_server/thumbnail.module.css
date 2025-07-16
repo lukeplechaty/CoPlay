@@ -1,0 +1,55 @@
+.title {
+  background-color: var(--secondary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.user {
+  background-color: var(--secondary);
+  padding: 0.5rem;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  /* padding-top: 0.5rem; */
+  padding-bottom: 0.5rem;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: start;
+  /* border: 1px dashed red; */
+}
+
+.stats {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-evenly;
+  align-items: center;
+  /* border: 1px dashed red; */
+}
+
+.tagBox {
+  background-color: white;
+}
+
+@media (prefers-color-scheme: light) {
+  .infoBox {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .name {
+    color: white;
+  }
+}
