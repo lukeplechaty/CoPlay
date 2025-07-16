@@ -6,6 +6,7 @@ import { getVoteCounts, getUserVote, getUser } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import ThumbnailClient from "@/components_client/ThumbnailClient";
 import style from "@/components_client/client_component_css/tag.module.css";
+import thumbnail from "@/components_server/thumbnail.module.css";
 
 function generateRoomId(length = 8) {
   return Math.random()
@@ -40,19 +41,23 @@ export default async function Thumbnail({ video }) {
         ))}
       </div>
       <ThumbnailClient video={video} />
-      <section className="flex items-center justify-evenly">
-        <div>
-          <p className="font-bold text-lg">{video?.title || "Title"}</p>
-          <p>{video?.username || "User"}</p>
+      <section className={thumbnail.infoBox}>
+        <div className={thumbnail.name}>
+          <p className={`${thumbnail.title} font-bold text-lg`}>
+            {video?.title || "Title"}
+          </p>
+          <p className={thumbnail.user}>{video?.username || "User"}</p>
         </div>
-        <p>{video?.views || "0"} Views</p>
-        <Votes
-          video_id={video?.id}
-          initialUpvotes={upvotes}
-          initialDownvotes={downvotes}
-          initialUserVote={userVote}
-          userId={userId}
-        />
+        <div className={thumbnail.stats}>
+          <p>{video?.views || "0"} Views</p>
+          <Votes
+            video_id={video?.id}
+            initialUpvotes={upvotes}
+            initialDownvotes={downvotes}
+            initialUserVote={userVote}
+            userId={userId}
+          />
+        </div>
       </section>
     </div>
   );
