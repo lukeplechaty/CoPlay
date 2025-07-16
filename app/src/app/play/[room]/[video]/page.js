@@ -1,4 +1,4 @@
-import { getUser, getVideo } from "@/db";
+import { getUser, getVideo, updateVideoViews } from "@/db";
 import VideoRoomClient from "@/components_client/VideoRoomClient";
 import { auth } from "@clerk/nextjs/server";
 
@@ -9,9 +9,9 @@ export default async function VideoPage({ params }) {
     return null;
   }
   const data = await getVideo(video);
+  await updateVideoViews(video);
   const { userId } = await auth();
   const { username } = await getUser(userId);
-
   return (
     <>
       <main className="w-full h-full flex flex-col items-center justify-center mt-4">
