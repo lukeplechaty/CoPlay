@@ -57,7 +57,7 @@ export async function getVideos(order, limit = 100, offset = 0) {
         videos.url,
         videos.title,
         videos.views,
-        users.uuid AS uploader_uuid,
+        users.username AS uploader_username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -70,7 +70,7 @@ export async function getVideos(order, limit = 100, offset = 0) {
       LEFT JOIN video_tag_links ON videos.id = video_tag_links.video_id
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
-      GROUP BY videos.id, users.uuid
+      GROUP BY videos.id, users.username
       ${orderby}
       LIMIT $1 OFFSET $2
       `,
@@ -91,7 +91,7 @@ export async function getVideo(id) {
         videos.url,
         videos.title,
         videos.views,
-        users.uuid AS uploader_uuid,
+        users.username AS uploader_username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -105,7 +105,7 @@ export async function getVideo(id) {
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id 
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id 
       WHERE videos.id = $1 
-      GROUP BY videos.id, users.uuid
+      GROUP BY videos.id, users.username
       `,
       [id]
     );
@@ -124,7 +124,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
         videos.url, 
         videos.title, 
         videos.views,
-        users.uuid AS uploader_uuid,
+        users.username AS uploader_username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -144,7 +144,7 @@ export async function searchVideos(searchTerm, limit = 100, offset = 0) {
            JOIN tags ON tags.id = video_tag_links.tag_id
            WHERE LOWER(tags.value) LIKE LOWER($1)
          )
-      GROUP BY videos.id, users.uuid
+      GROUP BY videos.id, users.username
       LIMIT $2 OFFSET $3
       `,
       [`%${searchTerm}%`, limit, offset]
@@ -294,7 +294,7 @@ export async function getUserVideos(user_id, limit = 100, offset = 0) {
         videos.url, 
         videos.title, 
         videos.views,
-        users.uuid AS uploader_uuid,
+        users.username AS uploader_username,
         COALESCE(
           JSONB_AGG(
             DISTINCT JSONB_BUILD_OBJECT('type', tag_types.value, 'value', tags.value)
@@ -308,7 +308,7 @@ export async function getUserVideos(user_id, limit = 100, offset = 0) {
       LEFT JOIN tags ON tags.id = video_tag_links.tag_id
       LEFT JOIN tag_types ON tag_types.id = tags.tag_type_id
       WHERE user_video_links.user_id = $1
-      GROUP BY videos.id, users.uuid
+      GROUP BY videos.id, users.username
       LIMIT $2 OFFSET $3
       `,
       [user_id, limit, offset]
