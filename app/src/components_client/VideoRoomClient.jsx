@@ -2,6 +2,7 @@
 import { useSocket } from "@/utils/socket";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Chat from "£/Chat";
 import Video from "./Video";
 
 export default function VideoRoomClient({ video_id, room_id, data }) {
@@ -56,7 +57,9 @@ export default function VideoRoomClient({ video_id, room_id, data }) {
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
         <div className="bg-slate-800 p-6 rounded shadow-lg text-center">
           <h2 className="text-xl mb-4">Join Room?</h2>
-          <p className="mb-6">Do you want to join room <b>{room_id}</b>?</p>
+          <p className="mb-6">
+            Do you want to join room <b>{room_id}</b>?
+          </p>
           <button
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mr-2"
             onClick={() => set_accepted(true)}
@@ -76,8 +79,12 @@ export default function VideoRoomClient({ video_id, room_id, data }) {
 
   return (
     <div className="my-2 p-2 bg-slate-700 rounded text-white flex flex-col items-center">
-      <span>Room ID: <b>{room_id}</b></span>
-      {is_host === true && <span className="text-green-400 mt-1">You are the host</span>}
+      <span>
+        Room ID: <b>{room_id}</b>
+      </span>
+      {is_host === true && (
+        <span className="text-green-400 mt-1">You are the host</span>
+      )}
       {is_host !== null && (
         <div className="w-full flex justify-center mt-4">
           <Video
@@ -86,8 +93,9 @@ export default function VideoRoomClient({ video_id, room_id, data }) {
             is_host={is_host}
             data={data}
           />
+          <Chat room_id={room_id} />
         </div>
       )}
     </div>
   );
-} 
+}

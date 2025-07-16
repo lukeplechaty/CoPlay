@@ -6,9 +6,7 @@ export default async function HomePage({ searchParams }) {
   const searchData = await searchParams;
   const query = searchData?.q || "";
   const sort = searchData?.sort || ``;
-  let videoArray = query ? await searchVideos(query) : await getVideos(sort);
-
-  console.log(videoArray);
+  const videoArray = query ? await searchVideos(query) : await getVideos(sort);
   return (
     <main className="flex flex-col items-center justify-between h-full w-full">
       <section className="flex w-full justify-evenly items-center mb-4">
