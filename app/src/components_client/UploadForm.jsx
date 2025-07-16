@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AddTag from "£/AddTag";
 import navcss from "£$/nav.module.css";
+import style from "£$/upload.module.css";
 
 export default function UploadForm({ submit, fileName, user, tags }) {
   const [tagVals, setTagVals] = useState([]);
@@ -27,22 +28,22 @@ export default function UploadForm({ submit, fileName, user, tags }) {
           setLoading(false);
         }
       }}
+      className={`w-full h-full flex flex-col items-center justify-evenly`}
     >
       <input type="text" name="file" value={fileName} readOnly hidden />
 
-      {/* <input type="text" name="tags" value={cleaned(tagVals)} readOnly hidden /> */}
-
-      <label htmlFor="title">
+      <label htmlFor="title" className="flex items-center gap-2">
         Video Title
         <input
           type="text"
           name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className={style.input}
         />
       </label>
 
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-wrap w-3/4 items-center gap-4">
         <AddTag tags={tags} setTagVals={setTagVals} tagVals={tagVals} />
       </div>
 

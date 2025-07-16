@@ -1,0 +1,13 @@
+.input {
+  background-color: hsl(from var(--background) h s calc(l + 8));
+  border-radius: 10px;
+  height: 1.8rem;
+  padding-left: 1rem;
+  font-size: 0.8rem;
+
+  transition: outline 100ms ease-in-out, scale 200ms ease-in-out;
+  &:focus-visible {
+    scale: 1.05;
+    outline: 2px solid var(--accent);
+  }
+}
