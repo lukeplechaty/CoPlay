@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Chat from "£/Chat";
 import Video from "./Video";
 
-export default function VideoRoomClient({ video_id, room_id, data }) {
+export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
   const [is_host, set_is_host] = useState(null);
   const [accepted, set_accepted] = useState(false);
@@ -93,7 +93,7 @@ export default function VideoRoomClient({ video_id, room_id, data }) {
             is_host={is_host}
             data={data}
           />
-          <Chat room_id={room_id} />
+          <Chat room_id={room_id} username={username} />
         </div>
       )}
     </div>
