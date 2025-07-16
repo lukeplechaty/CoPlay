@@ -2,11 +2,11 @@ import { useSocket } from "@/utils/socket";
 import style from "£$/chat.module.css";
 import Chatbox from "./Chatbox";
 
-export default function Chat({ room_id }) {
+export default function Chat({ room_id, username }) {
   const socket = useSocket();
 
   async function sendMessage(e) {
-    const message = e.get(`message`).trim();
+    const message = `${username}: ${e.get(`message`).trim()}`;
     if (!socket || !room_id || !message) return;
     socket.emit("chat_update", {
       room_id,
