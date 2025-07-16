@@ -1,17 +1,21 @@
 "use client";
 import { useSocket } from "@/utils/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 export default function Chatbox({ room_id }) {
   const socket = useSocket();
-  const [message, setMessage] = useState(``);
+  const [messages, setMessages] = useState([]);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     if (!socket || !room_id) return;
     const handleRequest = ({ message }) => {
-      setMessage(message);
-      setTimeout(() => {
-        setMessage(``);
-      }, 5000);
+      setMessages((prev) => {
+        const newMessages = [...prev, message];
+        setTimeout(() => {
+          setMessages((current) => current.slice(1));
+        }, 10000);
+        return newMessages;
+      });
     };
     socket.on("chat_update", handleRequest);
     return () => {
@@ -19,10 +23,25 @@ export default function Chatbox({ room_id }) {
     };
   }, [socket, room_id]);
 
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
-    <div>
-      {/* clear black glass look over bottom of video */}
-      <p>{message}</p>
+    <div className="max-h-52 overflow-y-auto bg-slate-800/80 rounded-lg p-3 mt-2 shadow-inner border border-slate-700">
+      <ul className="space-y-2">
+        {messages.map((msg, idx) => (
+          <li
+            key={idx}
+            className="bg-slate-700 text-white px-4 py-2 rounded-xl w-fit max-w-full break-words shadow-md"
+          >
+            {msg}
+          </li>
+        ))}
+        <div ref={bottomRef} />
+      </ul>
     </div>
   );
 }
