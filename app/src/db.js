@@ -215,7 +215,7 @@ export async function getUserVote(video_id, user_id) {
   }
 }
 
-export async function addVideo({ url, title, tags = [], user_id }) {
+export async function addVideo(url, title, tags = [], user_id) {
   try {
     const videoRes = await db.query(
       `INSERT INTO videos (url, title) VALUES ($1, $2) RETURNING *`,
@@ -223,21 +223,20 @@ export async function addVideo({ url, title, tags = [], user_id }) {
     );
     const video = videoRes.rows[0];
     await db.query(
-      `INSERT INTO user_video_links (user_id, video_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+      `INSERT INTO user_video_links (user_id, video_id) VALUES ($1, $2)`,
       [user_id, video.id]
     );
     for (const tag of tags) {
       const tagRes = await db.query(
         `INSERT INTO tags (tag_type_id, value)
-         VALUES ($1, $2)
-         ON CONFLICT (tag_type_id, value) DO UPDATE SET type = EXCLUDED.type RETURNING id`,
+        VALUES ($1, $2)
+        RETURNING id`,
         [tag.id, tag.value]
       );
       const tagId = tagRes.rows[0].id;
       await db.query(
         `INSERT INTO video_tag_links (video_id, tag_id)
-         VALUES ($1, $2)
-         ON CONFLICT DO NOTHING`,
+        VALUES ($1, $2)`,
         [video.id, tagId]
       );
     }
