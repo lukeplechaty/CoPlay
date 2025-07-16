@@ -15,9 +15,7 @@ export default async function VideoDbUploadPage({ params }) {
   const submit = async (url, title, tags, id) => {
     "use server";
 
-    console.log([url, title, tags, id]);
-    const upload = await addVideo(url, title, tags, id);
-    console.log("res:", upload);
+    await addVideo(url, title, tags, id);
 
     // redirect to show uploads
     redirect(`/?user=${id}`);

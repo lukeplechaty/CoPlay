@@ -16,18 +16,26 @@
 }
 
 .tagList {
-  background-color: var(--secondary);
+  background-color: hsl(from var(--secondary) h s calc(l - 12));
   display: flex;
   flex-direction: column;
   align-items: baseline;
   justify-content: space-evenly;
   /* border: 1px solid black; */
-  padding: 0.8rem;
+  padding: 0.5rem 0.8rem;
   margin-right: 0.2rem;
   margin-bottom: 0.2rem;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 12px;
   color: white;
+
+  transition: filter 200ms ease-in-out;
+  &:hover {
+    filter: brightness(120%);
+  }
+  &:active {
+    filter: brightness(75%);
+  }
 }
 
 .tagBox {
