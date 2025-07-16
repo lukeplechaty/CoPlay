@@ -16,7 +16,7 @@
 }
 
 .tagList {
-  background-color: hsl(from var(--secondary) h s calc(l - 12));
+  background-color: hsl(from var(--background) h s calc(l + 8));
   display: flex;
   flex-direction: column;
   align-items: baseline;

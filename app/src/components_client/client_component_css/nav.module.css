@@ -28,7 +28,7 @@
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  background-color: hsl(from var(--secondary) h s calc(l - 14));
+  background-color: hsl(from var(--background) h s calc(l + 8));
   border-radius: 20px;
   padding: 0.5rem 0 0.5rem 1rem;
 
@@ -52,8 +52,8 @@
   padding: 1rem;
   width: auto;
   z-index: 5;
-  background-color: hsl(from var(--secondary) h s calc(l - 14));
-  color: #f0f5f9;
+  background-color: hsl(from var(--background) h s calc(l + 8));
+  color: var(--text);
 
   border-radius: 1rem;
   /* transform: translateY(-1.5rem); */
