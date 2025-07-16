@@ -46,7 +46,9 @@ export default async function Thumbnail({ video }) {
           <p className={`${thumbnail.title} font-bold text-lg`}>
             {video?.title || "Title"}
           </p>
-          <p className={thumbnail.user}>{video?.username || "User"}</p>
+          {video?.username ? (
+            <p className={thumbnail.user}>{video?.username}</p>
+          ) : null}
         </div>
         <div className={thumbnail.stats}>
           <p>{video?.views || "0"} Views</p>
