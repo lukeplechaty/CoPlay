@@ -5,6 +5,7 @@ import Menu from "./Menu";
 import Search from "./Search";
 import Image from "next/image";
 import MenuBox from "./MenuBox";
+import "animate.css";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -12,33 +13,54 @@ import Link from "next/link";
 export default function NavBar() {
   const [menu, setMenu] = useState(false);
   const menuRef = useRef(null);
+  const toggleRef = useRef(null);
 
   const toggleMenu = () => {
-    setMenu((prev) => !prev);
+    setMenu((prev) => {
+      const newValue = !prev;
+      if (newValue) {
+        menuClick();
+      }
+      return newValue;
+    });
   };
+
+  function menuClick() {
+    const element = menuRef.current;
+    if (element) {
+      element.classList.remove("animate__fadeInDown");
+      void element.offsetWidth;
+      element.classList.add("animate__fadeInDown");
+    }
+  }
 
   useEffect(() => {
     // function for outside clicks
     function clickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenu(false);
+      if (
+        menuRef.current && //check if menu box exists
+        !menuRef.current.contains(event.target) && // if the click is not in the menu box
+        toggleRef.current &&
+        !toggleRef.current.contains(event.target)
+      ) {
+        setMenu(false); //closes menu
       }
     }
 
     if (menu) {
-      document.addEventListener("mousedown", clickOutside);
+      document.addEventListener("click", clickOutside);
     } else {
-      document.removeEventListener("mousedown", clickOutside);
+      document.removeEventListener("click", clickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", clickOutside);
+      document.removeEventListener("click", clickOutside);
     };
   }, [menu]);
 
   return (
     <>
-      <div className={`${style.nav} pt-4 pb-4`} ref={menuRef}>
+      <div className={`${style.nav} pt-4 pb-4`}>
         <Link href={"/"}>
           <picture>
             <source
@@ -58,10 +80,10 @@ export default function NavBar() {
           </picture>
         </Link>
         <Search />
-        <Menu toggleMenu={toggleMenu} />
+        <Menu onClick={menuClick} toggleMenu={toggleMenu} ref={toggleRef} />
       </div>
       <div className={style.navBackLayer}>
-        <MenuBox menu={menu} />
+        <MenuBox menu={menu} ref={menuRef} />
       </div>
     </>
   );
