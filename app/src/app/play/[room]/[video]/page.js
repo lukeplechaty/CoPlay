@@ -1,4 +1,4 @@
-import { getVideo } from "@/db";
+import { getVideo, updateVideoViews } from "@/db";
 import VideoRoomClient from "@/components_client/VideoRoomClient";
 
 export default async function VideoPage({ params }) {
@@ -8,6 +8,7 @@ export default async function VideoPage({ params }) {
     return null;
   }
   const data = await getVideo(video);
+  await updateVideoViews(video);
   return (
     <>
       <main className="w-full h-full flex flex-col items-center justify-center mt-4">
