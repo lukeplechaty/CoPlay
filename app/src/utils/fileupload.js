@@ -5,6 +5,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
+// not using for upload
 export async function addVideo(name, file) {
   try {
     const { data, error } = await supabase.storage
