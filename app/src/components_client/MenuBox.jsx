@@ -11,7 +11,7 @@ const MenuBox = forwardRef(function MenuBox({ menu }, ref) {
   return (
     <div
       ref={ref}
-      className={`${Style.menuBox} animate__animated animate__fadeInDown`}
+      className={`${Style.menuBox} animate__animated animate__fadeInRight animate__faster`}
     >
       <Logins />
       <SignedOut>

@@ -34,7 +34,7 @@ export default async function HomePage({ searchParams }) {
         )}
         {DBid > 0 ? <Link href={`?user=${DBid}`}>My Uploads</Link> : null}
       </section>
-      <section>
+      <section className="body">
         {videoArray?.map((v) => <Thumbnail key={v.id} video={v} />) || (
           <h2>Post a video and start a trend!</h2>
         )}
