@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import AddTag from "£/AddTag";
+import navcss from "£$/nav.module.css";
 
 export default function UploadForm({ submit, fileName, user, tags }) {
   const [tagVals, setTagVals] = useState([]);
   const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // strip _uuid from each object
   const cleaned = (arr) =>
@@ -16,9 +18,14 @@ export default function UploadForm({ submit, fileName, user, tags }) {
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        submit(fileName, title, cleaned(tagVals), user);
+        setLoading(true);
+        try {
+          await submit(fileName, title, cleaned(tagVals), user);
+        } finally {
+          setLoading(false);
+        }
       }}
     >
       <input type="text" name="file" value={fileName} readOnly hidden />
@@ -41,13 +48,12 @@ export default function UploadForm({ submit, fileName, user, tags }) {
 
       <input type="number" name="user" value={user} readOnly hidden />
 
-      <button type="submit">Upload</button>
-
-      {tagVals.map((tv) => (
-        <p key={tagVals.indexOf(tv)}>
-          {tv.id} | {tv.value}
-        </p>
-      ))}
+      <button
+        type="submit"
+        className={`${navcss.searchButton} ${loading ? `opacity-50` : ``}`}
+      >
+        {loading ? "Uploading..." : "Upload"}
+      </button>
     </form>
   );
 }
