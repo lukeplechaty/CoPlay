@@ -31,6 +31,9 @@ io.on("connection", (socket) => {
 
     socket.join(roomId);
 
+    // Emit confirmation to the client
+    socket.emit("join-room-confirmed", { roomId, socketId: socket.id });
+
     setImmediate(() => {
       const room = io.sockets.adapter.rooms.get(roomId);
       const size = room ? room.size : 0;
