@@ -9,7 +9,27 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
   const [is_host, set_is_host] = useState(null);
   const [accepted, set_accepted] = useState(false);
+  const [joining, set_joining] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!joining) return;
+    if (!socket || !room_id) return;
+
+    const handleJoinConfirmed = ({ roomId, socketId }) => {
+      if (roomId === room_id) {
+        set_accepted(true);
+        set_joining(false);
+      }
+    };
+    socket.on("join-room-confirmed", handleJoinConfirmed);
+
+    socket.emit("join-room", room_id);
+
+    return () => {
+      socket.off("join-room-confirmed", handleJoinConfirmed);
+    };
+  }, [joining, socket, room_id]);
 
   useEffect(() => {
     if (!accepted) return;
@@ -62,13 +82,15 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
           </p>
           <button
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mr-2"
-            onClick={() => set_accepted(true)}
+            onClick={() => set_joining(true)}
+            disabled={joining}
           >
-            Accept
+            {joining ? "Joining..." : "Accept"}
           </button>
           <button
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
             onClick={() => router.replace("/")}
+            disabled={joining}
           >
             Decline
           </button>
