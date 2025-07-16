@@ -28,9 +28,9 @@ export default function NavBar() {
   function menuClick() {
     const element = menuRef.current;
     if (element) {
-      element.classList.remove("animate__fadeInDown");
+      element.classList.remove("animate__fadeInRight");
       void element.offsetWidth;
-      element.classList.add("animate__fadeInDown");
+      element.classList.add("animate__fadeInRight");
     }
   }
 

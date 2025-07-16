@@ -25,7 +25,7 @@ export default async function HomePage({ searchParams }) {
         )}
         <h3>My Uploads</h3>
       </section>
-      <section>
+      <section className="body">
         {videoArray?.map((v) => <Thumbnail key={v.id} video={v} />) || (
           <h2>Post a video and start a trend!</h2>
         )}
