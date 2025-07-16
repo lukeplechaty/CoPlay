@@ -75,27 +75,26 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
         </div>
       </div>
     );
-  }
-
-  return (
-    <div className="my-2 p-2 bg-slate-700 rounded text-white flex flex-col items-center">
-      <span>
-        Room ID: <b>{room_id}</b>
-      </span>
-      {is_host === true && (
-        <span className="text-green-400 mt-1">You are the host</span>
-      )}
-      {is_host !== null && (
-        <div className="w-full flex justify-center mt-4">
-          <Video
-            video_id={video_id}
-            room_id={room_id}
-            is_host={is_host}
-            data={data}
-          />
-          <Chat room_id={room_id} username={username} />
-        </div>
-      )}
-    </div>
-  );
+  } else
+    return (
+      <div className="my-2 p-2 bg-slate-700 rounded text-white flex flex-col items-center">
+        <span>
+          Room ID: <b>{room_id}</b>
+        </span>
+        {is_host === true && (
+          <span className="text-green-400 mt-1">You are the host</span>
+        )}
+        {is_host !== null && (
+          <div className="w-full flex justify-center mt-4">
+            <Video
+              video_id={video_id}
+              room_id={room_id}
+              is_host={is_host}
+              data={data}
+            />
+            <Chat room_id={room_id} username={username} />
+          </div>
+        )}
+      </div>
+    );
 }

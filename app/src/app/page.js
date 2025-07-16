@@ -1,15 +1,24 @@
 import Thumbnail from "=/Thumbnail";
-import { getVideos, searchVideos } from "@/db";
+import { getUser, getVideos, searchVideos, getUserVideos } from "@/db";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function HomePage({ searchParams }) {
   const searchData = await searchParams;
   const query = searchData?.q || ``;
   const sort = searchData?.sort || ``;
+  const user = searchData?.user || ``;
+  const { userId } = await auth();
+  let DBid = -1;
+  if (userId) {
+    const { id } = await getUser(userId);
+    DBid = id;
+  }
+
   async function getVideo() {
     if (query) return await searchVideos(query);
     else if (sort) return await getVideos(sort);
-    else if (false) return await getUserVideos(uuid);
+    else if (user) return await getUserVideos(user);
     else return await getVideos(sort);
   }
   const videoArray = await getVideo();
@@ -23,7 +32,7 @@ export default async function HomePage({ searchParams }) {
         ) : (
           <Link href="?sort=asc">Oldest</Link>
         )}
-        <h3>My Uploads</h3>
+        {DBid > 0 ? <Link href={`?user=${DBid}`}>My Uploads</Link> : null}
       </section>
       <section>
         {videoArray?.map((v) => <Thumbnail key={v.id} video={v} />) || (
