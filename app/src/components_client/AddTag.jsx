@@ -46,6 +46,7 @@ export default function AddTag({ tags, setTagVals, tagVals }) {
             value={oneTag.value}
             onChange={(e) => setOneTag({ ...oneTag, value: e.target.value })}
             className={style.input}
+            required
           />
         </label>
       </fieldset>

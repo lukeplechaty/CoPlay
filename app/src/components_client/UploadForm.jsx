@@ -43,6 +43,8 @@ export default function UploadForm({ submit, fileName, user, tags }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={`${style.input} w-1/2`}
+          required
+          maxLength={30}
         />
       </label>
 
