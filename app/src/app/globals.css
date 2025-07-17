@@ -156,13 +156,13 @@ body {
   animation: flash-bg 0.5s ease;
 }
 
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 400px) {
   .body {
     display: flex;
     flex-wrap: wrap;
     align-items: start;
     align-content: center;
-    justify-content: start;
+    justify-content: center;
     width: 90dvw;
     gap: 0.5rem;
   }
