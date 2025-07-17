@@ -26,3 +26,12 @@ export function getVideoUrl(video) {
     throw new Error(`get from bucket error: ${error}`);
   }
 }
+
+export function deleteVideo(video) {
+  try {
+    const { data } = supabase.storage.from("Videos").remove(video);
+    return data.publicUrl;
+  } catch (error) {
+    throw new Error(`delete from bucket error: ${error}`);
+  }
+}
