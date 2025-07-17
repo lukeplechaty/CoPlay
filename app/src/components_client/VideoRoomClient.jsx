@@ -6,6 +6,7 @@ import Chat from "£/Chat";
 import Video from "./Video";
 import VideoControls from "./VideoControls";
 import Chatbox from "./Chatbox";
+import ChatboxInput from "./ChatboxInput";
 
 export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
@@ -14,6 +15,7 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const [joining, set_joining] = useState(false);
   const router = useRouter();
   const video_ref = useRef(null);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     if (!joining) return;
@@ -75,6 +77,16 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
     };
   }, [socket, room_id, router, accepted]);
 
+  useEffect(() => {
+    function handleFullscreenChange() {
+      setFullscreen(!!document.fullscreenElement && document.fullscreenElement.id === "contaner");
+    }
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   if (!accepted) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
@@ -114,8 +126,8 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
           )}
         </div>
         {is_host !== null && (
-          <div id="contaner">
-            <div className=" w-full h-full justify-center">
+          <div id="contaner" className="relative">
+            <div className="w-full h-full justify-center">
               <Video
                 video_id={video_id}
                 room_id={room_id}
@@ -123,14 +135,35 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
                 data={data}
                 video_ref={video_ref}
               />
+              {/* Controls inside video when fullscreen */}
+              {fullscreen && (
+                <div className="absolute left-0 right-0 bottom-4 z-50 w-full">
+                  <VideoControls
+                    is_host={is_host}
+                    video_ref={video_ref}
+                    fullscreen={true}
+                    room_id={room_id}
+                    username={username}
+                  />
+                </div>
+              )}
+              {/* Chatbox overlay in top right of video */}
+              <div className="absolute top-4 right-4 z-40 max-w-xs w-full">
+                <Chatbox room_id={room_id} overlay={true} username={username} hideInput={true} />
+              </div>
             </div>
-            <Chatbox room_id={room_id} />
-            <Chat room_id={room_id} username={username} />
-            <VideoControls
-              is_host={is_host}
-              video_ref={video_ref}
-              className="fixed bottom-0"
-            />
+            {/* Controls below video when not fullscreen */}
+            {!fullscreen && (
+              <div className="w-full">
+                <VideoControls
+                  is_host={is_host}
+                  video_ref={video_ref}
+                  fullscreen={false}
+                  room_id={room_id}
+                  username={username}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
