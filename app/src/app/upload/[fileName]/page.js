@@ -22,8 +22,10 @@ export default async function VideoDbUploadPage({ params }) {
   };
 
   return (
-    <main>
-      <h1 className="font-title text-2xl font-bold">Important Info</h1>
+    <main className="w-full h-full flex flex-col justify-start items-center gap-8 mt-12">
+      <h1 className="font-title text-4xl font-bold tracking-wide">
+        Important Info
+      </h1>
       <UploadForm
         submit={submit}
         fileName={getVideoUrl(decodePeriod(fileName))}

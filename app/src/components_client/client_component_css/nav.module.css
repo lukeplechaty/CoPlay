@@ -79,14 +79,13 @@
 
 .button,
 .searchButton {
-  color: #f0f5f9;
   padding: 0.3rem 1rem;
   border-radius: 1000px;
-  background-color: hsl(from var(--secondary) h s calc(l - 14));
+  background-color: hsl(from var(--background) h s calc(l + 8));
   transition: filter 200ms ease-in-out;
   cursor: pointer;
   &:hover {
-    filter: brightness(90%);
+    filter: brightness(120%);
   }
   &:active {
     filter: brightness(75%);
@@ -94,7 +93,11 @@
 }
 
 .searchButton {
+  color: #f0f5f9;
   background-color: var(--accent);
+  &:hover {
+    filter: brightness(90%);
+  }
 }
 
 /* Prevents search box from overlapping search button when clicked on - I don't know if this is fully centered though */

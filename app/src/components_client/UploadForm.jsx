@@ -28,22 +28,25 @@ export default function UploadForm({ submit, fileName, user, tags }) {
           setLoading(false);
         }
       }}
-      className={`w-full h-full flex flex-col items-center justify-evenly`}
+      className={`h-full flex flex-col items-center justify-evenly p-4 rounded-2xl ${style.card}`}
     >
       <input type="text" name="file" value={fileName} readOnly hidden />
 
-      <label htmlFor="title" className="flex items-center gap-2">
-        Video Title
+      <label
+        htmlFor="title"
+        className="flex items-center justify-center gap-2 w-full"
+      >
+        <p className="">Video Title</p>
         <input
           type="text"
           name="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={style.input}
+          className={`${style.input} w-1/2`}
         />
       </label>
 
-      <div className="flex flex-wrap w-3/4 items-center gap-4">
+      <div className="flex flex-wrap min-w-3/4 items-center justify-start gap-x-4 gap-y-8 mt-8">
         <AddTag tags={tags} setTagVals={setTagVals} tagVals={tagVals} />
       </div>
 
@@ -51,7 +54,9 @@ export default function UploadForm({ submit, fileName, user, tags }) {
 
       <button
         type="submit"
-        className={`${navcss.searchButton} ${loading ? `opacity-50` : ``}`}
+        className={`${navcss.searchButton} ${
+          loading ? `opacity-50` : ``
+        } font-title mt-2`}
       >
         {loading ? "Uploading..." : "Upload"}
       </button>
