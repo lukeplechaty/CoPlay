@@ -97,12 +97,12 @@ const DropzoneContent = ({ className }) => {
             {files.length > 1 ? "s" : ""}
           </p>
         </div>
-        // * MY CODE ———————————————————————————————————————
+        {/* * MY CODE ——————————————————————————————————————— */}
         <div className="px-4 py-2 rounded-full shadow-md">
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           <h1 className="opacity-75">Loading...</h1>
         </div>
-        // * ———————————————————————————————————————————————
+        {/* * ——————————————————————————————————————————————— */}
       </section>
     );
   }

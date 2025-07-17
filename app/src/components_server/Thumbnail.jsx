@@ -16,6 +16,22 @@ function generateRoomId(length = 8) {
     .toString(36)
     .substring(2, 2 + length);
 }
+const getFile = async (url) => {
+  "use server";
+  const splitted = url.split(
+    "https://zqisdwtldxkvgkhmcvus.supabase.co/storage/v1/object/public/Videos/"
+  );
+  return splitted[1];
+};
+
+const deleteVid = async (video) => {
+  "use server";
+  await removeVideo(video.id);
+  await deleteVideo(getFile(video.url));
+  // const user = await getUser(user.id);
+  // revalidatePath("/");
+  redirect(`/`);
+};
 
 export default async function Thumbnail({ video, user }) {
   const grops = video.tags.reduce((result, obj) => {
@@ -35,15 +51,6 @@ export default async function Thumbnail({ video, user }) {
   const counts = await getVoteCounts(video.id);
   upvotes = counts.upvotes;
   downvotes = counts.downvotes;
-
-  const deleteVid = async (video) => {
-    "use server";
-    await removeVideo(video.id);
-    deleteVideo(video.url);
-    const { id } = await getUser(userId);
-    revalidatePath("/");
-    redirect(`/?user=${id}`);
-  };
 
   return (
     <div className={`${thumbnail.body} p-2 rounded-2xl m-3`}>

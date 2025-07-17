@@ -19,19 +19,24 @@ export async function addVideo(name, file) {
 }
 
 export function getVideoUrl(video) {
-  try {
-    const { data } = supabase.storage.from("Videos").getPublicUrl(video);
-    return data.publicUrl;
-  } catch (error) {
-    throw new Error(`get from bucket error: ${error}`);
+  const { data, error } = supabase.storage.from("Videos").getPublicUrl(video);
+  if (error || !data?.publicUrl) {
+    throw new Error(
+      `get from bucket error: ${error?.message || "No public URL"}`
+    );
   }
+  return data.publicUrl;
 }
 
-export function deleteVideo(video) {
+export async function deleteVideo(videoPath) {
+  console.log(await videoPath);
   try {
-    const { data } = supabase.storage.from("Videos").remove(video);
-    return data.publicUrl;
+    const { data, error } = await supabase.storage
+      .from("Videos")
+      .remove([videoPath]);
+    if (error) throw error;
+    return data;
   } catch (error) {
-    throw new Error(`delete from bucket error: ${error}`);
+    //throw new Error(`delete from bucket error: ${error.message}`);
   }
 }
