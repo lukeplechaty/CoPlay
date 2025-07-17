@@ -197,49 +197,17 @@ export default function Video({ data, video_id, room_id, is_host, video_ref }) {
   }, [is_host, socket, video_ref, room_id]);
 
   return (
-    <div className="relative w-fit">
+    <>
       <video
         ref={video_ref}
-        className={`h-[75dvh] max-h-fit w-auto bg-black rounded-2xl ${
-          is_host ? "" : "pointer-events-none"
-        }`}
+        className={`h-full w-full bg-black`}
         autoPlay={is_host}
-        // controls={is_host}
-        // controlsList={
-        //   is_host
-        //     ? "nodownload"
-        //     : "nodownload noplaybackrate nofullscreen nofastforward noremoteplayback"
-        // }
-
-        // onKeyDown={handleInteraction}
-        // onClick={handleInteraction}
-        // onContextMenu={handleInteraction}
       >
         <source src={url} type="video/mp4" />
         <p>
           Video failed to load, click <a href={url}>this link</a> instead.
         </p>
       </video>
-      <div className="absolute bottom-2.5 left-0 w-full flex justify-center items-center pointer-events-none z-20">
-        {is_host ? (
-          <></>
-        ) : (
-          <div className="bg-slate-800/80 text-white px-4 py-1.5 rounded-lg flex items-center gap-3 pointer-events-auto">
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              defaultValue={1}
-              className="w-24"
-              onChange={(e) => {
-                if (video_ref.current)
-                  video_ref.current.volume = Number(e.target.value);
-              }}
-            />
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }

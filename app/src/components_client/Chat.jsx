@@ -15,9 +15,8 @@ export default function Chat({ room_id, username }) {
   }
 
   return (
-    <section className={style.container}>
-      {/* bottom of video, Chatbox now displays a list of messages */}
-      <form action={sendMessage}>
+    <section className={`${style.container} absolute bottom-0`} id="chat">
+      <form action={sendMessage} className=" inline bottom-0">
         <input type="text" name="message" />
         <button type="submit">submit</button>
       </form>
