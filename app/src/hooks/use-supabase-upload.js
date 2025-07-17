@@ -34,9 +34,15 @@ const useSupabaseUpload = (options) => {
     const validFiles = acceptedFiles
       .filter((file) => !files.find((x) => x.name === file.name))
       .map((file) => {
-        ;(file).preview = URL.createObjectURL(file)
-        ;(file).errors = []
-        return file;
+        // Generate a unique name: originalName_timestamp_random.ext
+        const ext = file.name.includes('.') ? file.name.substring(file.name.lastIndexOf('.')) : '';
+        const base = file.name.replace(ext, '');
+        const uniqueSuffix = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        const uniqueName = `${base}_${uniqueSuffix}${ext}`;
+        const newFile = new File([file], uniqueName, { type: file.type });
+        newFile.preview = URL.createObjectURL(file);
+        newFile.errors = [];
+        return newFile;
       })
 
     const invalidFiles = fileRejections.map(({ file, errors }) => {

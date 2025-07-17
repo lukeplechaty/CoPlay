@@ -217,6 +217,15 @@ export async function getUserVote(video_id, user_id) {
 
 export async function addVideo(url, title, tags = [], user_id) {
   try {
+    // Check if a video with the same URL already exists
+    const existing = await db.query(
+      `SELECT * FROM videos WHERE url = $1`,
+      [url]
+    );
+    if (existing.rows.length > 0) {
+      // Optionally, you could update title/tags/user links here if needed
+      return true;
+    }
     const videoRes = await db.query(
       `INSERT INTO videos (url, title) VALUES ($1, $2) RETURNING *`,
       [url, title]

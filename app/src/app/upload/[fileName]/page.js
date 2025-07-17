@@ -17,7 +17,7 @@ export default async function VideoDbUploadPage({ params }) {
 
     await addVideo(url, title, tags, id);
 
-    // redirect to show uploads
+    // redirect to user's uploads page
     redirect(`/?user=${id}`);
   };
 
