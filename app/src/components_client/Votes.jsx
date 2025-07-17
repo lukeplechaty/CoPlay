@@ -53,9 +53,6 @@ export default function Votes({
   } else if (loading) {
     message = "Voting...";
     messageClass = "text-gray-400";
-  } else if (!userId) {
-    message = "Sign in to vote";
-    messageClass = "text-orange-500";
   }
 
   return (
@@ -64,10 +61,10 @@ export default function Votes({
         <button
           onClick={() => handleVote("up")}
           className={`cursor-pointer px-2 py-1 rounded ${
-            userVote === true ? "text-green-500 font-bold" : "text-white"
+            userVote === true ? "text-green-500 font-bold" : "text-txt"
           } ${
             loading || !userId
-              ? "opacity-50 cursor-not-allowed"
+              ? "opacity-25 cursor-not-allowed"
               : "hover:bg-green-900/30"
           }`}
           disabled={!userId || loading}
@@ -77,10 +74,10 @@ export default function Votes({
         <button
           onClick={() => handleVote("down")}
           className={`cursor-pointer px-2 py-1 rounded ${
-            userVote === false ? "text-red-500 font-bold" : "text-white"
+            userVote === false ? "text-red-500 font-bold" : "text-txt"
           } ${
             loading || !userId
-              ? "opacity-50 cursor-not-allowed"
+              ? "opacity-25 cursor-not-allowed"
               : "hover:bg-red-900/30"
           }`}
           disabled={!userId || loading}
