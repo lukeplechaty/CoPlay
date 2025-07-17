@@ -1,9 +1,12 @@
 "use client";
 import { useSocket } from "@/utils/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Chat from "£/Chat";
 import Video from "./Video";
+import VideoControls from "./VideoControls";
+import Chatbox from "./Chatbox";
+import ChatboxInput from "./ChatboxInput";
 
 export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
@@ -11,6 +14,8 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const [accepted, set_accepted] = useState(false);
   const [joining, set_joining] = useState(false);
   const router = useRouter();
+  const video_ref = useRef(null);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     if (!joining) return;
@@ -72,6 +77,16 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
     };
   }, [socket, room_id, router, accepted]);
 
+  useEffect(() => {
+    function handleFullscreenChange() {
+      setFullscreen(!!document.fullscreenElement && document.fullscreenElement.id === "contaner");
+    }
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   if (!accepted) {
     return (
       <div
@@ -108,21 +123,55 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
   } else
     return (
       <div className="my-2 p-2 bg-slate-700 rounded text-white flex flex-col items-center">
-        <span>
-          Room ID: <b>{room_id}</b>
-        </span>
-        {is_host === true && (
-          <span className="text-green-400 mt-1">You are the host</span>
-        )}
+        <div className=" flex flex-col mb-4">
+          <span>
+            Room ID: <b>{room_id}</b>
+          </span>
+          {is_host ? (
+            <span className="text-green-400 mt-1">You are the host</span>
+          ) : (
+            <span className="text-green-400 mt-1">You are a viewer</span>
+          )}
+        </div>
         {is_host !== null && (
-          <div className="w-full flex justify-center mt-4">
-            <Video
-              video_id={video_id}
-              room_id={room_id}
-              is_host={is_host}
-              data={data}
-            />
-            <Chat room_id={room_id} username={username} />
+          <div id="contaner" className="relative">
+            <div className="w-full h-full justify-center">
+              <Video
+                video_id={video_id}
+                room_id={room_id}
+                is_host={is_host}
+                data={data}
+                video_ref={video_ref}
+              />
+              {/* Controls inside video when fullscreen */}
+              {fullscreen && (
+                <div className="absolute left-0 right-0 bottom-4 z-50 w-full">
+                  <VideoControls
+                    is_host={is_host}
+                    video_ref={video_ref}
+                    fullscreen={true}
+                    room_id={room_id}
+                    username={username}
+                  />
+                </div>
+              )}
+              {/* Chatbox overlay in top right of video */}
+              <div className="absolute top-4 right-4 z-40 max-w-xs w-full">
+                <Chatbox room_id={room_id} overlay={true} username={username} hideInput={true} />
+              </div>
+            </div>
+            {/* Controls below video when not fullscreen */}
+            {!fullscreen && (
+              <div className="w-full">
+                <VideoControls
+                  is_host={is_host}
+                  video_ref={video_ref}
+                  fullscreen={false}
+                  room_id={room_id}
+                  username={username}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
