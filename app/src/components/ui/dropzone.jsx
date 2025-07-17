@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, File, Loader2, Upload, X } from "lucide-react";
 import { createContext, useCallback, useContext } from "react";
-import { redirect, useRouter } from "next/navigation";
 import { encodePeriod } from "@/utils/escaping";
 
 export const formatBytes = (bytes, decimals = 2, size) => {
@@ -85,17 +84,26 @@ const DropzoneContent = ({ className }) => {
     window.location.href = `/upload/${dynamicRoute}`;
     // * ———————————————————————————————————————————————
     return (
-      <div
-        className={cn(
-          "flex flex-row items-center gap-x-2 justify-center",
-          className
-        )}
-      >
-        <CheckCircle size={16} className="text-primary" />
-        <p className="text-primary text-sm">
-          Successfully uploaded {files.length} file{files.length > 1 ? "s" : ""}
-        </p>
-      </div>
+      <section>
+        <div
+          className={cn(
+            "flex flex-row items-center gap-x-2 justify-center",
+            className
+          )}
+        >
+          <CheckCircle size={16} className="text-primary" />
+          <p className="text-primary text-sm">
+            Successfully uploaded {files.length} file
+            {files.length > 1 ? "s" : ""}
+          </p>
+        </div>
+        // * MY CODE ———————————————————————————————————————
+        <div className="px-4 py-2 rounded-full shadow-md">
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <h1 className="opacity-75">Loading...</h1>
+        </div>
+        // * ———————————————————————————————————————————————
+      </section>
     );
   }
 

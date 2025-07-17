@@ -9,6 +9,7 @@ import style from "@/components_client/client_component_css/tag.module.css";
 import thumbnail from "@/components_server/thumbnail.module.css";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { deleteVideo } from "@/utils/fileupload";
 
 function generateRoomId(length = 8) {
   return Math.random()
@@ -37,7 +38,8 @@ export default async function Thumbnail({ video, user }) {
 
   const deleteVid = async (video) => {
     "use server";
-    await removeVideo(video);
+    await removeVideo(video.id);
+    deleteVideo(video.url);
     const { id } = await getUser(userId);
     revalidatePath("/");
     redirect(`/?user=${id}`);
@@ -79,7 +81,7 @@ export default async function Thumbnail({ video, user }) {
         </div>
       </section>
       {user ? (
-        <form className="w-full mt-1" action={deleteVid.bind(null, video.id)}>
+        <form className="w-full mt-1" action={deleteVid.bind(null, video)}>
           <button className="px-4 py-1 rounded-2xl bg-red-400 font-bold text-[#081221] w-full cursor-pointer hover:bg-red-500 active:bg-red-800 transition-colors">
             Delete
           </button>
