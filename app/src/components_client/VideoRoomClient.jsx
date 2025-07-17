@@ -74,8 +74,16 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
 
   if (!accepted) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-        <div className="bg-slate-800 p-6 rounded shadow-lg text-center">
+      <div
+        className=" fixed inset-0 flex items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
+        <div
+          className=" p-6 rounded shadow-lg text-center"
+          style={{
+            backgroundColor: "hsl(from var(--background) h s calc(l - 8))",
+          }}
+        >
           <h2 className="text-xl mb-4">Join Room?</h2>
           <p className="mb-6">
             Do you want to join room <b>{room_id}</b>?
