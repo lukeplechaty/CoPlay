@@ -14,7 +14,7 @@ function generateRoomId(length = 8) {
     .substring(2, 2 + length);
 }
 
-export default async function Thumbnail({ video }) {
+export default async function Thumbnail({ video, user }) {
   const grops = video.tags.reduce((result, obj) => {
     (result[obj.type] = result[obj.type] || []).push(obj);
     return result;
@@ -34,11 +34,15 @@ export default async function Thumbnail({ video }) {
   downvotes = counts.downvotes;
 
   return (
-    <div className={`${thumbnail.body} p-2 rounded-2xl bg-slate-800/50 m-3`}>
+    <div className={`${thumbnail.body} p-2 rounded-2xl m-3`}>
       <div className={style.tagBox}>
-        {Object.entries(grops).map((tag, index) => (
-          <Tag key={index} tagList={tag} />
-        ))}
+        {Object.entries(grops).length > 0 ? (
+          Object.entries(grops).map((tag, index) => (
+            <Tag key={index} tagList={tag} />
+          ))
+        ) : (
+          <p className="opacity-50">No Tags</p>
+        )}
       </div>
       <ThumbnailClient video={video} />
       <section className={thumbnail.infoBox}>
@@ -51,16 +55,28 @@ export default async function Thumbnail({ video }) {
           ) : null}
         </div>
         <div className={thumbnail.stats}>
-          <p>{video?.views || "0"} Views</p>
-          <Votes
-            video_id={video?.id}
-            initialUpvotes={upvotes}
-            initialDownvotes={downvotes}
-            initialUserVote={userVote}
-            userId={userId}
-          />
+          <div className="mt-2">
+            <Votes
+              video_id={video?.id}
+              initialUpvotes={upvotes}
+              initialDownvotes={downvotes}
+              initialUserVote={userVote}
+              userId={userId}
+            />
+          </div>
+
+          <p className="text-xs mr-1 opacity-75">{video?.views || "0"} Views</p>
         </div>
       </section>
+      {user ? (
+        <div className="w-full mt-1">
+          <button className="px-4 py-1 rounded-2xl bg-red-400 font-bold text-[#081221] w-full cursor-pointer hover:bg-red-500 active:bg-red-800 transition-colors">
+            Delete
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

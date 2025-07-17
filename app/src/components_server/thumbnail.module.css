@@ -1,46 +1,46 @@
 .title {
-  background-color: var(--secondary);
+  background-color: hsl(from var(--background) h s calc(l + 4) / 50%);
   border-radius: 10px;
   padding: 0.5rem;
   margin-top: 0.5rem;
+  font-size: 1rem;
+  color: hsl(from var(--text) h s l / 90%);
 }
 
 .user {
-  background-color: var(--secondary);
-  padding: 0.5rem;
-  border-radius: 10px;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0 0 0.25rem;
+  font-size: 0.75rem;
+  color: hsl(from var(--text) h s l / 75%);
 }
 
 .infoBox {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  border-radius: 10px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  /* padding-top: 0.5rem; */
-  padding-bottom: 0.5rem;
-  /* border: 1px dashed red; */
   width: 100%;
-  height: 100%;
+  height: 90%;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  /* margin: 0.25rem 0; */
 }
 
 .name {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: start;
-  /* border: 1px dashed red; */
+  /* doesnt like height: 100% for some reason */
+  height: -webkit-fill-available;
 }
 
 .stats {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: space-evenly;
-  align-items: center;
-  /* border: 1px dashed red; */
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: end;
+  height: 100%;
+}
+
+.body {
+  background-color: hsl(from var(--background) h s calc(l - 8));
 }
 
 .tagBox {
@@ -61,11 +61,13 @@
   .body {
     display: flex;
     flex-direction: column;
-    justify-content: start;
     align-items: start;
-    height: 50vh;
-    max-height: 50vh;
-    max-width: 20vw;
-    min-width: 20vw;
+    justify-content: space-between;
+    row-gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+
+    min-height: 16dvh;
+    height: fit-content;
+    width: 20dvw;
   }
 }
