@@ -17,8 +17,10 @@ export default function UploadPage() {
   });
 
   return (
-    <main className="w-full h-[75dvh] flex flex-col items-center justify-evenly">
-      <h1 className="font-title text-2xl font-medium">Video Upload</h1>
+    <main className="w-full h-[75dvh] flex flex-col items-center justify-start mt-16 gap-[25%]">
+      <h1 className="font-title text-4xl font-bold tracking-wide">
+        Video Upload
+      </h1>
       <Dropzone {...props}>
         <DropzoneEmptyState />
         <DropzoneContent />
