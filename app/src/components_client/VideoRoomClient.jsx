@@ -1,9 +1,10 @@
 "use client";
 import { useSocket } from "@/utils/socket";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Chat from "£/Chat";
 import Video from "./Video";
+import VideoControls from "./VideoControls";
 
 export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
@@ -11,6 +12,7 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const [accepted, set_accepted] = useState(false);
   const [joining, set_joining] = useState(false);
   const router = useRouter();
+  const video_ref = useRef(null);
 
   useEffect(() => {
     if (!joining) return;
@@ -103,18 +105,22 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
         <span>
           Room ID: <b>{room_id}</b>
         </span>
-        {is_host === true && (
+        {is_host ? (
           <span className="text-green-400 mt-1">You are the host</span>
+        ) : (
+          <span className="text-green-400 mt-1">You are a viewer</span>
         )}
         {is_host !== null && (
-          <div className="w-full flex justify-center mt-4">
+          <div className="w-full flex justify-center mt-4" id="contaner">
             <Video
               video_id={video_id}
               room_id={room_id}
               is_host={is_host}
               data={data}
+              video_ref={video_ref}
             />
             <Chat room_id={room_id} username={username} />
+            <VideoControls is_host={is_host} video_ref={video_ref} />
           </div>
         )}
       </div>
