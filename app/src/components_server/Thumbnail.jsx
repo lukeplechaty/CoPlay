@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import Votes from "£/Votes";
 import Tag from "£/Tag";
-import { getVoteCounts, getUserVote, getUser } from "@/db";
+import { getVoteCounts, getUserVote, getUser, removeVideo } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import ThumbnailClient from "@/components_client/ThumbnailClient";
 import style from "@/components_client/client_component_css/tag.module.css";
 import thumbnail from "@/components_server/thumbnail.module.css";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 function generateRoomId(length = 8) {
   return Math.random()
@@ -32,6 +34,14 @@ export default async function Thumbnail({ video, user }) {
   const counts = await getVoteCounts(video.id);
   upvotes = counts.upvotes;
   downvotes = counts.downvotes;
+
+  const deleteVid = async (video) => {
+    "use server";
+    await removeVideo(video);
+    const { id } = await getUser(userId);
+    revalidatePath("/");
+    redirect(`/?user=${id}`);
+  };
 
   return (
     <div className={`${thumbnail.body} p-2 rounded-2xl m-3`}>
@@ -69,11 +79,11 @@ export default async function Thumbnail({ video, user }) {
         </div>
       </section>
       {user ? (
-        <div className="w-full mt-1">
+        <form className="w-full mt-1" action={deleteVid.bind(null, video.id)}>
           <button className="px-4 py-1 rounded-2xl bg-red-400 font-bold text-[#081221] w-full cursor-pointer hover:bg-red-500 active:bg-red-800 transition-colors">
             Delete
           </button>
-        </div>
+        </form>
       ) : (
         <></>
       )}
