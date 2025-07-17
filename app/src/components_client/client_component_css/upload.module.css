@@ -4,10 +4,22 @@
   height: 1.8rem;
   padding-left: 1rem;
   font-size: 0.8rem;
+  min-width: 12rem;
 
   transition: outline 100ms ease-in-out, scale 200ms ease-in-out;
   &:focus-visible {
     scale: 1.05;
     outline: 2px solid var(--accent);
   }
+}
+
+.card {
+  min-width: 75%;
+  width: fit-content;
+  max-width: 90%;
+
+  min-height: 60dvh;
+  height: fit-content;
+  background-color: hsl(from var(--accent) h s calc(l + 12) / 4%);
+  border: 3px solid var(--primary);
 }
