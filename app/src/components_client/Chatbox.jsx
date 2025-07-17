@@ -30,7 +30,7 @@ export default function Chatbox({ room_id }) {
   }, [messages]);
 
   return (
-    <div className="max-h-52 overflow-y-auto bg-slate-800/80 rounded-lg p-3 mt-2 shadow-inner border border-slate-700">
+    <div className="max-h-52 overflow-y-auto bg-slate-800/80 rounded-lg p-3 mt-2 shadow-inner border border-slate-700 absolute bottom-0">
       <ul className="space-y-2">
         {messages.map((msg, idx) => (
           <li

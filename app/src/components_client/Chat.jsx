@@ -1,6 +1,5 @@
 import { useSocket } from "@/utils/socket";
 import style from "£$/chat.module.css";
-import Chatbox from "./Chatbox";
 
 export default function Chat({ room_id, username }) {
   const socket = useSocket();
@@ -20,7 +19,6 @@ export default function Chat({ room_id, username }) {
         <input type="text" name="message" />
         <button type="submit">submit</button>
       </form>
-      <Chatbox room_id={room_id} />
     </section>
   );
 }

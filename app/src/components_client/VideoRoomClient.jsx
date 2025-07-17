@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Chat from "£/Chat";
 import Video from "./Video";
 import VideoControls from "./VideoControls";
+import Chatbox from "./Chatbox";
 
 export default function VideoRoomClient({ video_id, room_id, data, username }) {
   const socket = useSocket();
@@ -123,6 +124,7 @@ export default function VideoRoomClient({ video_id, room_id, data, username }) {
                 video_ref={video_ref}
               />
             </div>
+            <Chatbox room_id={room_id} />
             <Chat room_id={room_id} username={username} />
             <VideoControls
               is_host={is_host}
