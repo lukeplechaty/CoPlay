@@ -1,0 +1,21 @@
+.tab {
+  font-family: var(--moderno);
+  font-size: 1.2rem;
+  letter-spacing: 0.05rem;
+
+  text-decoration: underline solid 2px transparent;
+  text-underline-offset: 0.5rem;
+  transition: text-decoration 200ms ease-in-out, scale 200ms ease-in-out,
+    filter 200ms ease-in-out;
+
+  &.active {
+    text-decoration: underline solid 2px var(--accent);
+  }
+
+  &:hover {
+    scale: 1.05;
+  }
+  &:active {
+    filter: brightness(75%);
+  }
+}
