@@ -27,9 +27,17 @@ const getFile = async (url) => {
 const deleteVid = async (video) => {
   "use server";
   await removeVideo(video.id);
-  await deleteVideo(getFile(video.url));
-  // const user = await getUser(user.id);
-  // revalidatePath("/");
+  let filePath = null;
+  try {
+    filePath = await getFile(video.url);
+    if (filePath && typeof filePath === 'string' && filePath.length > 0) {
+      await deleteVideo(filePath);
+    } else {
+      console.error('Invalid file path for deletion:', filePath);
+    }
+  } catch (err) {
+    console.error('Error extracting file path for deletion:', err);
+  }
   redirect(`/`);
 };
 
